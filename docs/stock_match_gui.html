@@ -189,6 +189,103 @@
     color: #000;
     box-shadow: 0 0 14px rgba(74, 222, 128, 0.5);
   }
+  .scenario-btn[data-source="__keyword_search__"] {
+    background: rgba(255, 182, 39, 0.08);
+    color: var(--terran);
+    border-left: 1px solid var(--terran);
+  }
+  .scenario-btn[data-source="__keyword_search__"].active {
+    background: var(--terran);
+    color: #000;
+    box-shadow: 0 0 14px var(--terran-glow);
+  }
+
+  /* Direct Keyword Search 섹션 (사이드바) */
+  .ks-section {
+    background: linear-gradient(135deg, rgba(255,182,39,0.08) 0%, rgba(78,205,196,0.05) 100%);
+    border: 1px solid var(--terran);
+    padding: 12px;
+    display: none;
+  }
+  .ks-section.visible { display: block; }
+  .ks-input-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .ks-input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+  .ks-input:focus { outline: none; border-color: var(--terran); }
+  .ks-add-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--terran);
+    color: var(--terran);
+    font-family: var(--display);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 12px;
+    cursor: pointer;
+  }
+  .ks-add-btn:hover { background: var(--terran); color: #000; }
+  .ks-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+    min-height: 24px;
+  }
+  .ks-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(78, 205, 196, 0.12);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+  .ks-chip .x {
+    cursor: pointer; opacity: 0.6; font-size: 10px;
+  }
+  .ks-chip .x:hover { opacity: 1; color: var(--red); }
+  .ks-search-btn {
+    width: 100%;
+    background: var(--terran);
+    border: none;
+    color: #000;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    padding: 11px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    box-shadow: 0 0 14px var(--terran-glow);
+  }
+  .ks-search-btn:hover {
+    background: var(--cyan);
+    box-shadow: 0 0 20px var(--cyan-glow);
+  }
+  .ks-search-btn:disabled {
+    background: var(--bg-elevated);
+    color: var(--ink-faint);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  .ks-hint {
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
   .clock {
     font-family: var(--display);
     font-weight: 500;
@@ -1317,10 +1414,10 @@
       DANTALINK <small>:: STOCK MATCH CONSOLE / STAGE 02</small>
     </div>
     <div class="scenario-select">
+      <button class="scenario-btn" data-source="__keyword_search__" data-help="scenario_keyword_search">🔍 KEYWORD SEARCH</button>
       <button class="scenario-btn active" data-source="matches_demo.json" data-help="scenario_demo">DEMO</button>
       <button class="scenario-btn" data-source="matches_live.json" data-help="scenario_live">LIVE RSS</button>
       <button class="scenario-btn" data-source="__collector__" data-help="scenario_collector" id="btn-from-collector" style="display:none;">FROM COLLECTOR</button>
-      <button class="scenario-btn" data-source="__upload__" data-help="scenario_upload">UPLOAD…</button>
     </div>
     <div style="display:flex; gap:6px;">
       <button class="nav-btn" id="btn-home" title="메인 화면">← MAIN</button>
@@ -1335,6 +1432,22 @@
   <div class="body">
     <!-- SIDEBAR -->
     <div class="sidebar">
+      <!-- Direct Keyword Search (KEYWORD SEARCH 시나리오 활성 시만 표시) -->
+      <div class="ks-section" id="ks-section">
+        <div class="section-title" style="color:var(--terran);">▸ Direct Keyword Search</div>
+        <div class="ks-input-row">
+          <input type="text" id="ks-input" class="ks-input" placeholder="키워드 입력 후 Enter">
+          <button class="ks-add-btn" id="ks-add">+ ADD</button>
+        </div>
+        <div class="ks-chips" id="ks-chips"></div>
+        <button class="ks-search-btn" id="ks-search" disabled>▶ MATCH STOCKS</button>
+        <div class="ks-hint">
+          ⓘ 사명에 포함되거나 카테고리 테마와 연관된 종목 자동 발굴.<br>
+          예: <strong style="color:var(--terran);">백신, 에볼라</strong> → 차백신연구소·중앙백신…<br>
+          예: <strong style="color:var(--terran);">샘 알트먼</strong> → 샘표·샘표식품 (음운)
+        </div>
+      </div>
+
       <div>
         <div class="section-title">
           ▸ Data Source
@@ -1566,7 +1679,11 @@
     },
     scenario_upload: {
       title: 'UPLOAD',
-      body: '직접 matches_*.json 파일을 선택하거나 드래그하여 로드.\n맥북 세션 등 다른 환경에서 생성한 매칭 결과도 시각화 가능.'
+      body: '직접 matches_*.json 파일을 선택하거나 드래그하여 로드.\n맥북 세션 등 다른 환경에서 생성한 매칭 결과도 시각화 가능.\n\n현재는 시나리오 토글에서 빠지고, 사이드바 file-zone에서만 접근 (드래그·클릭).'
+    },
+    scenario_keyword_search: {
+      title: '🔍 KEYWORD SEARCH — 직접 키워드로 종목 찾기',
+      body: '트리거 이벤트 없이 키워드만으로 즉시 종목 매칭.\n\n흐름:\n1. 클릭 → 사이드바에 "▸ Direct Keyword Search" 섹션 표시\n2. 키워드 chips 입력 (예: 백신, 에볼라)\n3. ▶ MATCH STOCKS → 클라이언트 매칭 엔진 실행\n4. 결과 카드 그리드 표시\n\n매칭 규칙:\n• Layer A 음운: 첫 음절 일치 (예: 샘 → 샘표)\n• Layer B 의미: 키워드가 종목명/Industry/Products에 포함\n• 동일 카드 인사이트(EXACT/Dual/GENUINE/NAME-ONLY) 적용\n\n사용 시점:\n• Data Collection을 거치지 않고 즉석 검색\n• "이 키워드에 사명·사업 매칭되는 종목이 누군지" 즉시 확인'
     },
     scenario_collector: {
       title: 'FROM COLLECTOR (●)',
@@ -2670,6 +2787,62 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
 
+  // ============ Direct Keyword Search ============
+  const KS_STATE = { keywords: [] };
+
+  function renderKsChips() {
+    const chipBox = $('#ks-chips');
+    chipBox.innerHTML = KS_STATE.keywords.map(k =>
+      `<span class="ks-chip">${escapeHtml(k)}<span class="x" data-kw="${escapeHtml(k)}">✕</span></span>`).join('');
+    chipBox.querySelectorAll('.x').forEach(x => x.addEventListener('click', () => {
+      KS_STATE.keywords = KS_STATE.keywords.filter(k => k !== x.dataset.kw);
+      renderKsChips();
+    }));
+    $('#ks-search').disabled = KS_STATE.keywords.length === 0;
+  }
+
+  async function runKeywordSearch() {
+    if (KS_STATE.keywords.length === 0) return;
+    try {
+      if (!_engine) {
+        if (!window.DantaLink || !window.DantaLink.MatcherEngine) {
+          alert('matcher_engine.js 로드 실패. 페이지를 새로고침하세요.');
+          return;
+        }
+        _engine = new window.DantaLink.MatcherEngine();
+        await _engine.loadKRXDB();
+      }
+      // 가상 트리거 이벤트 생성 — 키워드 합친 텍스트로 분류기에 통과시켜 카테고리 자동 추론
+      const titleText = KS_STATE.keywords.join(' ');
+      const cls = window.DantaLink.classify ? window.DantaLink.classify(titleText) : { category: 'unknown', keywords: [] };
+      const virtualEvent = {
+        event_id: 'keyword_search_' + Date.now(),
+        source: 'manual',
+        title: titleText,
+        body: '',
+        url: '',
+        published_at: new Date().toISOString(),
+        collected_at: new Date().toISOString(),
+        category: cls.category,
+        keywords: KS_STATE.keywords.slice(),  // 사용자 입력 그대로 의미 매칭
+        entities: [],
+        raw_payload: { manual: true }
+      };
+      const result = _engine.match([virtualEvent], {
+        minMarcap: STATE.minMarcap || 0,
+        maxMarcap: STATE.maxMarcap || 0,
+        maxPerToken: 5,
+        maxPerKeyword: 8
+      });
+      result.input_events = `KeywordSearch (${KS_STATE.keywords.length} kw)`;
+      const label = `Keyword: ${KS_STATE.keywords.slice(0, 3).join(', ')}${KS_STATE.keywords.length > 3 ? '…' : ''}`;
+      setData(result, label);
+    } catch (e) {
+      console.error(e);
+      alert('키워드 검색 실패: ' + e.message);
+    }
+  }
+
   // ============ MATCHER ENGINE (collector bridge) ============
   let _engine = null;
   async function runCollectorMatch() {
@@ -2711,6 +2884,15 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       const source = btn.dataset.source;
       $$('.scenario-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      // KEYWORD SEARCH 시나리오 — 사이드바 검색 섹션 토글
+      const ksSection = $('#ks-section');
+      if (source === '__keyword_search__') {
+        ksSection.classList.add('visible');
+        setTimeout(() => $('#ks-input').focus(), 100);
+        return;  // 데이터 로드 X — 사용자 입력 + ▶ MATCH STOCKS 클릭으로 시작
+      } else {
+        ksSection.classList.remove('visible');
+      }
       if (source === '__upload__') { $('#file-input').click(); return; }
       if (source === '__collector__') { await runCollectorMatch(); return; }
       const ok = await loadFromUrl('../' + source);
@@ -2734,6 +2916,20 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
     if (!document.fullscreenElement) document.documentElement.requestFullscreen();
     else document.exitFullscreen();
   });
+
+  // ===== Direct Keyword Search 핸들러 =====
+  $('#ks-add').addEventListener('click', () => {
+    const v = $('#ks-input').value.trim();
+    if (v && !KS_STATE.keywords.includes(v)) {
+      KS_STATE.keywords.push(v);
+      $('#ks-input').value = '';
+      renderKsChips();
+    }
+  });
+  $('#ks-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); $('#ks-add').click(); }
+  });
+  $('#ks-search').addEventListener('click', runKeywordSearch);
 
   $('#file-input').addEventListener('change', (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); });
   $('#file-zone').addEventListener('click', () => $('#file-input').click());
