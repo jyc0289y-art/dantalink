@@ -255,16 +255,19 @@
   </p>
 
   <h2>▸ Quick Launch</h2>
+  <p style="font-size:12px; color:var(--ink-dim); margin-bottom:14px;">
+    💡 <strong style="color:var(--cyan);">권장 흐름</strong>: 📡 Data Collection (키워드 + 소스 + 데이터셋 필터) → ▶ FORWARD TO MATCHER → 📈 Stock Match에서 자동 매칭. 두 콘솔은 localStorage로 연계됩니다.
+  </p>
   <div class="nav-grid">
-    <a class="nav-card primary" href="docs/stock_match_gui.html">
-      <div class="label">GUI · Stage 02</div>
-      <div class="title">📈 Stock Match Console</div>
-      <div class="desc">종목 추출 결과 시각화 콘솔. HOBIS Terran Console 디자인. 호버 툴팁 + ❔ HELP 모달로 모든 데이터 의미 설명.</div>
-    </a>
     <a class="nav-card" href="docs/data_collector_gui.html">
-      <div class="label">GUI · Stage 01</div>
+      <div class="label">① GUI · Stage 01</div>
       <div class="title">📡 Data Collection Console</div>
-      <div class="desc">트리거 이벤트 수집기 프로토타입 (Mock). RSS·GDELT·DART·Telegram 토글 + 콘솔 로그.</div>
+      <div class="desc">트리거 이벤트 수집·필터링. 사전 수집 데이터셋(events_rss.json·events_demo.json)에 키워드+소스 필터 적용 → Forward to Matcher로 전달.</div>
+    </a>
+    <a class="nav-card primary" href="docs/stock_match_gui.html">
+      <div class="label">② GUI · Stage 02</div>
+      <div class="title">📈 Stock Match Console</div>
+      <div class="desc">종목 추출 결과 시각화. DEMO/LIVE 정적 JSON 또는 FROM COLLECTOR로 받은 이벤트를 클라이언트 매칭 엔진(matcher_engine.js)으로 실시간 매칭.</div>
     </a>
     <a class="nav-card" href="docs/methodology_viz.html">
       <div class="label">방법론 시각화</div>

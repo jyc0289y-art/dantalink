@@ -155,6 +155,40 @@
     color: #000;
     box-shadow: 0 0 16px var(--cyan-glow);
   }
+  .nav-btn {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .nav-btn:hover {
+    color: var(--terran);
+    border-color: var(--terran);
+    box-shadow: 0 0 8px var(--terran-glow);
+  }
+  .scenario-btn[data-source="__collector__"] {
+    background: rgba(74, 222, 128, 0.12);
+    color: var(--green);
+    position: relative;
+  }
+  .scenario-btn[data-source="__collector__"]::after {
+    content: '●';
+    margin-left: 6px;
+    color: var(--green);
+    animation: pulse 2s infinite;
+  }
+  .scenario-btn[data-source="__collector__"].active {
+    background: var(--green);
+    color: #000;
+    box-shadow: 0 0 14px rgba(74, 222, 128, 0.5);
+  }
   .clock {
     font-family: var(--display);
     font-weight: 500;
@@ -819,9 +853,15 @@
     <div class="scenario-select">
       <button class="scenario-btn active" data-source="matches_demo.json" data-help="scenario_demo">DEMO</button>
       <button class="scenario-btn" data-source="matches_live.json" data-help="scenario_live">LIVE RSS</button>
+      <button class="scenario-btn" data-source="__collector__" data-help="scenario_collector" id="btn-from-collector" style="display:none;">FROM COLLECTOR</button>
       <button class="scenario-btn" data-source="__upload__" data-help="scenario_upload">UPLOAD…</button>
     </div>
-    <button class="help-btn" id="help-btn">❔ HELP / 사전</button>
+    <div style="display:flex; gap:6px;">
+      <button class="nav-btn" id="btn-home" title="메인 화면">← MAIN</button>
+      <button class="nav-btn" id="btn-collector" title="Data Collection Console로 이동">📡 COLLECTOR</button>
+      <button class="nav-btn" id="btn-fullscreen" title="전체화면">⛶ FULL</button>
+      <button class="help-btn" id="help-btn">❔ HELP / 사전</button>
+    </div>
     <div class="clock" id="clock" data-help="clock">--:--:-- UTC</div>
   </div>
 
@@ -972,9 +1012,30 @@
   </div>
 </div>
 
+<script src="matcher_engine.js"></script>
 <script>
 (function() {
   'use strict';
+
+  // ============ COLLECTOR BRIDGE ============
+  // Data Collection Console에서 localStorage로 전달된 이벤트가 있으면 FROM COLLECTOR 버튼 활성화
+  function checkCollectorBridge() {
+    try {
+      const raw = localStorage.getItem('dantalink_events');
+      if (!raw) return null;
+      const payload = JSON.parse(raw);
+      if (!payload || !payload.events || payload.events.length === 0) return null;
+      return payload;
+    } catch (_) { return null; }
+  }
+  const collectorPayload = checkCollectorBridge();
+  if (collectorPayload) {
+    const btn = document.getElementById('btn-from-collector');
+    if (btn) {
+      btn.style.display = '';
+      btn.textContent = `FROM COLLECTOR (${collectorPayload.events.length})`;
+    }
+  }
 
   // ============ GLOSSARY (모든 툴팁 & 모달 콘텐츠) ============
   const GLOSSARY = {
@@ -1004,6 +1065,10 @@
     scenario_upload: {
       title: 'UPLOAD',
       body: '직접 matches_*.json 파일을 선택하거나 드래그하여 로드.\n맥북 세션 등 다른 환경에서 생성한 매칭 결과도 시각화 가능.'
+    },
+    scenario_collector: {
+      title: 'FROM COLLECTOR (●)',
+      body: 'Data Collection Console에서 ▶ FORWARD TO MATCHER 버튼을 누른 이벤트들이 localStorage로 전달된 상태.\n\n클릭 시:\n1. localStorage 이벤트 로드\n2. KRX 종목 DB 다운로드 (data/krx_stocks.json)\n3. 클라이언트 매칭 엔진(matcher_engine.js)으로 Layer A·B 매칭 실행\n4. 결과 표시\n\n→ Stage 01 → Stage 02 라이브 연계의 핵심.'
     },
 
     // --- Data Source ---
@@ -1666,6 +1731,41 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
 
+  // ============ MATCHER ENGINE (collector bridge) ============
+  let _engine = null;
+  async function runCollectorMatch() {
+    const payload = checkCollectorBridge();
+    if (!payload || !payload.events) {
+      alert('Collector 이벤트가 없습니다. Data Collection Console에서 ▶ FORWARD TO MATCHER를 먼저 누르세요.');
+      return false;
+    }
+    try {
+      if (!_engine) {
+        if (!window.DantaLink || !window.DantaLink.MatcherEngine) {
+          alert('matcher_engine.js 로드 실패. 페이지를 새로고침하세요.');
+          return false;
+        }
+        _engine = new window.DantaLink.MatcherEngine();
+        await _engine.loadKRXDB();
+      }
+      const result = _engine.match(payload.events, {
+        minMarcap: STATE.minMarcap || 0,
+        maxMarcap: STATE.maxMarcap || 0,
+        maxPerToken: 5,
+        maxPerKeyword: 5
+      });
+      result.input_events = `Collector (${payload.events.length}건, ${(payload.meta && payload.meta.sources || []).join(',')})`;
+      const meta = payload.meta || {};
+      const label = `Collector → ${payload.events.length} events · kw: ${(meta.keywords||[]).slice(0,3).join(',')}${(meta.keywords||[]).length>3?'…':''}`;
+      setData(result, label);
+      return true;
+    } catch (e) {
+      console.error(e);
+      alert('Matcher 실행 실패: ' + e.message);
+      return false;
+    }
+  }
+
   // ============ EVENT WIRING ============
   $$('.scenario-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -1673,6 +1773,7 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       $$('.scenario-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (source === '__upload__') { $('#file-input').click(); return; }
+      if (source === '__collector__') { await runCollectorMatch(); return; }
       const ok = await loadFromUrl('../' + source);
       if (!ok) {
         const ok2 = await loadFromUrl('./' + source);
@@ -1680,11 +1781,19 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
           if (source === 'matches_demo.json') {
             setData(SAMPLE_DEMO, '(embedded sample)');
           } else {
-            alert('JSON 로드 실패: ' + source + '\n\nfile:// 직접 열기는 fetch가 차단됩니다.\n\n해결:\n1. 프로젝트 루트에서 `python -m http.server 8000` 후 http://localhost:8000/docs/DantaLink_종목추출_GUI.html\n2. 또는 UPLOAD로 직접 선택');
+            alert('JSON 로드 실패: ' + source + '\n\nfile:// 직접 열기는 fetch가 차단됩니다.\n\n해결:\n1. 프로젝트 루트에서 `python -m http.server 8000` 후 http://localhost:8000/docs/stock_match_gui.html\n2. 또는 UPLOAD로 직접 선택');
           }
         }
       }
     });
+  });
+
+  // ===== NAV BUTTONS =====
+  $('#btn-home').addEventListener('click', () => { window.location.href = '../index.html'; });
+  $('#btn-collector').addEventListener('click', () => { window.location.href = 'data_collector_gui.html'; });
+  $('#btn-fullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
   });
 
   $('#file-input').addEventListener('change', (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); });
@@ -1716,6 +1825,16 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
 
   // ============ INIT ============
   (async () => {
+    // URL `?source=collector` → 자동 매칭 실행
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('source') === 'collector' && collectorPayload) {
+      $$('.scenario-btn').forEach(b => b.classList.remove('active'));
+      const cbtn = document.getElementById('btn-from-collector');
+      if (cbtn) cbtn.classList.add('active');
+      const ok = await runCollectorMatch();
+      if (ok) return;
+    }
+    // 기본: matches_demo.json fetch
     const ok = await loadFromUrl('../matches_demo.json');
     if (!ok) {
       const ok2 = await loadFromUrl('./matches_demo.json');
