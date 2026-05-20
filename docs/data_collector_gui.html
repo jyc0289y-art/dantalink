@@ -251,6 +251,106 @@
   .stat-mini .l { font-size: 9px; color: var(--ink-faint); letter-spacing: 0.15em; text-transform: uppercase; }
   .stat-mini .v { font-family: var(--display); font-size: 14px; color: var(--cyan); font-weight: 700; }
   .stat-mini .v.terran { color: var(--terran); }
+
+  /* ===== Discover Mode — 트렌딩 키워드 chip (Sprint 3) ===== */
+  .trending-section {
+    background: linear-gradient(135deg, rgba(78,205,196,0.06) 0%, rgba(255,182,39,0.04) 100%);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--cyan);
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .trending-section.empty { display: none; }
+  .trending-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .trending-title {
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    text-transform: uppercase;
+  }
+  .trending-hint {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+  }
+  .trending-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .trending-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-bright);
+    color: var(--ink);
+    padding: 4px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.12s;
+    border-radius: 1px;
+  }
+  .trending-chip:hover {
+    border-color: var(--terran);
+    color: var(--terran);
+    box-shadow: 0 0 6px var(--terran-glow);
+  }
+  .trending-chip.selected {
+    background: var(--terran);
+    color: #000;
+    border-color: var(--terran);
+    box-shadow: 0 0 8px var(--terran-glow);
+  }
+  .trending-chip .freq {
+    font-family: var(--display);
+    font-size: 10px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .trending-chip.selected .freq { color: rgba(0,0,0,0.6); }
+  /* 카테고리별 좌측 보더 */
+  .trending-chip.tcat-health { border-left: 2px solid var(--red); }
+  .trending-chip.tcat-tech { border-left: 2px solid var(--cyan); }
+  .trending-chip.tcat-geopolitical { border-left: 2px solid var(--orange); }
+  .trending-chip.tcat-person { border-left: 2px solid var(--terran); }
+  .trending-chip.tcat-disaster { border-left: 2px solid var(--red); }
+  .trending-chip.tcat-regulatory { border-left: 2px solid var(--violet); }
+  .trending-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .trending-action-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-bright);
+    color: var(--ink-dim);
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 5px 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+  .trending-action-btn:hover {
+    border-color: var(--terran);
+    color: var(--terran);
+  }
+  .trending-action-btn.primary {
+    background: var(--cyan);
+    color: #000;
+    border-color: var(--cyan);
+  }
+  .trending-action-btn.primary:hover {
+    box-shadow: 0 0 12px var(--cyan-glow);
+  }
   .footer {
     background: var(--bg-panel); border-top: 1px solid var(--border);
     display: flex; align-items: center; justify-content: space-between;
@@ -374,6 +474,18 @@
         <div class="stat-mini"><div class="l">sources</div><div class="v" id="stat-sources">0</div></div>
         <div class="stat-mini"><div class="l">keywords</div><div class="v" id="stat-keywords">0</div></div>
       </div>
+      <!-- Discover Mode — 트렌딩 키워드 (Sprint 3) -->
+      <div class="trending-section empty" id="trending-section">
+        <div class="trending-header">
+          <div class="trending-title">▸ Trending Keywords (Top 12)</div>
+          <div class="trending-hint">click chip → Watch에 추가</div>
+        </div>
+        <div class="trending-chips" id="trending-chips"></div>
+        <div class="trending-actions">
+          <button class="trending-action-btn primary" id="trending-add-selected">+ Add Selected to Watch</button>
+          <button class="trending-action-btn" id="trending-clear">Clear Selected</button>
+        </div>
+      </div>
       <div class="events-list" id="events-list">
         <div style="text-align:center; padding:24px; color:var(--ink-faint); font-size:10px; letter-spacing:0.15em;">
           NO EVENTS COLLECTED
@@ -401,6 +513,8 @@
     dataset: '__all__',  // ALL default — 모든 데이터셋 합산
     collectedEvents: [],
     eventSort: 'published_desc',  // 정렬 옵션 default
+    trendingTopN: 12,            // Discover top N
+    trendingSelected: new Set(), // 사용자 선택 chip 모음
   };
   const AVAILABLE_DATASETS = ['events_rss.json', 'events_demo.json'];
 
@@ -451,6 +565,76 @@
       renderChips();
     }));
     $('#stat-keywords').textContent = STATE.keywords.length;
+  }
+
+  // ===== Discover Mode — 트렌딩 키워드 (Sprint 3) =====
+  function extractTrending(events, topN) {
+    const kwFreq = new Map();          // keyword → count
+    const kwCategory = new Map();      // keyword → 가장 흔한 category
+    const catCountPerKw = new Map();   // keyword → {category: count}
+    for (const e of events) {
+      const cat = e.category || 'unknown';
+      for (const kw of (e.keywords || [])) {
+        if (!kw) continue;
+        kwFreq.set(kw, (kwFreq.get(kw) || 0) + 1);
+        if (!catCountPerKw.has(kw)) catCountPerKw.set(kw, {});
+        const m = catCountPerKw.get(kw);
+        m[cat] = (m[cat] || 0) + 1;
+      }
+    }
+    // 가장 흔한 카테고리 산출
+    for (const [kw, catMap] of catCountPerKw) {
+      let bestCat = 'unknown', bestN = 0;
+      for (const [c, n] of Object.entries(catMap)) {
+        if (n > bestN) { bestN = n; bestCat = c; }
+      }
+      kwCategory.set(kw, bestCat);
+    }
+    const ranked = Array.from(kwFreq.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, topN);
+    return ranked.map(([kw, count]) => ({ keyword: kw, count, category: kwCategory.get(kw) || 'unknown' }));
+  }
+
+  function renderTrending() {
+    const section = $('#trending-section');
+    const chips = $('#trending-chips');
+    const trending = extractTrending(STATE.collectedEvents, STATE.trendingTopN);
+    if (trending.length === 0) {
+      section.classList.add('empty');
+      return;
+    }
+    section.classList.remove('empty');
+    chips.innerHTML = trending.map(t => {
+      const sel = STATE.trendingSelected.has(t.keyword) ? ' selected' : '';
+      return `<span class="trending-chip tcat-${t.category}${sel}" data-kw="${escapeHtml(t.keyword)}">${escapeHtml(t.keyword)} <span class="freq">${t.count}</span></span>`;
+    }).join('');
+    chips.querySelectorAll('.trending-chip').forEach(el => {
+      el.addEventListener('click', () => {
+        const kw = el.dataset.kw;
+        if (STATE.trendingSelected.has(kw)) STATE.trendingSelected.delete(kw);
+        else STATE.trendingSelected.add(kw);
+        el.classList.toggle('selected');
+      });
+    });
+  }
+
+  function addSelectedTrendingToWatch() {
+    let added = 0;
+    for (const kw of STATE.trendingSelected) {
+      if (!STATE.keywords.includes(kw)) {
+        STATE.keywords.push(kw);
+        added++;
+      }
+    }
+    STATE.trendingSelected.clear();
+    renderChips();
+    renderTrending();
+    if (added > 0) {
+      log(`✓ Discover → Watch에 ${added}개 키워드 추가됨: 다시 ▶ INITIATE SCAN으로 좁히기`, 'ok');
+    } else {
+      log('  (선택된 chip 없음 또는 이미 모두 Watch에 있음)', 'warn');
+    }
   }
 
   function renderEvents() {
@@ -564,7 +748,15 @@
     if (filtered.length > 15) log(`    ... 외 ${filtered.length - 15}건`, 'info');
 
     STATE.collectedEvents = filtered;
+    STATE.trendingSelected.clear();
     renderEvents();
+    renderTrending();
+    // Discover 모드 안내 — 트렌딩이 추출됐고 키워드가 비어있으면
+    const trending = extractTrending(filtered, STATE.trendingTopN);
+    if (trending.length > 0 && STATE.keywords.length === 0) {
+      log(`  💡 Discover: 트렌딩 키워드 ${trending.length}개 추출 — chip 선택 후 Watch에 추가`, 'info');
+      log(`     상위 5: ${trending.slice(0, 5).map(t => t.keyword + '(' + t.count + ')').join(', ')}`, 'event');
+    }
     log(`✓ 스캔 완료 · 총 ${filtered.length}건 수집 · FORWARD TO MATCHER 활성화`, 'ok');
     $('#footer-info').textContent = `${filtered.length} events · ${activeSrc.join(',')}`;
     $('#btn-scan').disabled = false;
@@ -614,6 +806,11 @@
   }));
   $('#dataset-select').addEventListener('change', (e) => { STATE.dataset = e.target.value; });
   $('#event-sort').addEventListener('change', (e) => { STATE.eventSort = e.target.value; renderEvents(); });
+  $('#trending-add-selected').addEventListener('click', addSelectedTrendingToWatch);
+  $('#trending-clear').addEventListener('click', () => {
+    STATE.trendingSelected.clear();
+    renderTrending();
+  });
   $('#btn-scan').addEventListener('click', executeScan);
   $('#btn-forward').addEventListener('click', forwardToMatcher);
 
