@@ -835,6 +835,168 @@
   }
   .event-modal-match-info strong { color: var(--green); }
 
+  /* ====== Analysis Panel (차트/뉴스/종목토론) ====== */
+  .analysis-trigger {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(78,205,196,0.15), rgba(255,182,39,0.15));
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 10px;
+    cursor: pointer;
+    margin: 8px 0 12px;
+    transition: all 0.15s;
+  }
+  .analysis-trigger:hover {
+    background: var(--cyan);
+    color: #000;
+    box-shadow: 0 0 16px var(--cyan-glow);
+  }
+  .analysis-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 70000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  .analysis-overlay.visible { display: flex; }
+  .analysis-modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 56px var(--cyan-glow);
+    width: min(960px, 94vw);
+    height: min(740px, 92vh);
+    display: flex;
+    flex-direction: column;
+    border-radius: 1px;
+  }
+  .analysis-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+  }
+  .analysis-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    color: var(--terran);
+  }
+  .analysis-title small {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-left: 8px;
+    letter-spacing: 0.2em;
+  }
+  .analysis-close {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 4px 11px;
+    cursor: pointer;
+  }
+  .analysis-close:hover { border-color: var(--red); color: var(--red); }
+  .analysis-tabs {
+    display: flex;
+    background: var(--bg-input);
+    border-bottom: 1px solid var(--border);
+  }
+  .analysis-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ink-dim);
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    border-bottom: 2px solid transparent;
+  }
+  .analysis-tab:hover { color: var(--ink); }
+  .analysis-tab.active {
+    color: var(--terran);
+    border-bottom-color: var(--terran);
+    background: rgba(255, 182, 39, 0.08);
+  }
+  .analysis-body {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-deep);
+  }
+  .analysis-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .analysis-pane {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 24px;
+  }
+  .analysis-link-card {
+    display: block;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--cyan);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .analysis-link-card:hover {
+    border-left-color: var(--terran);
+    background: var(--bg-elevated);
+    box-shadow: 0 0 14px var(--terran-glow);
+    color: var(--terran);
+  }
+  .analysis-link-card .name {
+    font-family: var(--display);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .analysis-link-card .url {
+    font-size: 10px;
+    color: var(--ink-dim);
+    word-break: break-all;
+  }
+  .analysis-link-card .arrow {
+    float: right;
+    font-family: var(--display);
+    color: var(--cyan);
+  }
+  .analysis-link-card:hover .arrow { color: var(--terran); }
+  .analysis-note {
+    font-size: 11px;
+    color: var(--ink-dim);
+    background: var(--bg-input);
+    padding: 10px 12px;
+    border-left: 2px solid var(--orange);
+    margin-bottom: 16px;
+  }
+
   /* Match Evidence sort row */
   .match-sort-row {
     display: flex;
@@ -1303,6 +1465,26 @@
   <div class="tooltip-body" id="tooltip-body"></div>
 </div>
 
+<!-- ANALYSIS PANEL OVERLAY (차트/뉴스/종목토론) -->
+<div class="analysis-overlay" id="analysis-overlay">
+  <div class="analysis-modal">
+    <div class="analysis-header">
+      <div>
+        <div class="analysis-title" id="analysis-title">종목명 <small id="analysis-code">000000</small></div>
+      </div>
+      <button class="analysis-close" id="analysis-close" title="닫기 (Esc)">✕</button>
+    </div>
+    <div class="analysis-tabs">
+      <button class="analysis-tab active" data-tab="chart">📈 차트</button>
+      <button class="analysis-tab" data-tab="news">📰 뉴스</button>
+      <button class="analysis-tab" data-tab="forum">💬 종목토론</button>
+    </div>
+    <div class="analysis-body" id="analysis-body">
+      <!-- JS로 동적 렌더 -->
+    </div>
+  </div>
+</div>
+
 <!-- EVENT DETAIL OVERLAY (Phase B) -->
 <div class="event-overlay" id="event-overlay">
   <div class="event-modal" id="event-modal">
@@ -1592,6 +1774,10 @@
     business_info: {
       title: '실제 사업 정보 (KRX-DESC)',
       body: 'Industry: KRX 공식 산업분류\nProducts: 회사 주요 제품/서비스\n\n출처: finance-datareader KRX-DESC.\n사명과 다른 사업을 하는 종목 식별의 기준.'
+    },
+    analysis_panel: {
+      title: '🔍 분석 패널',
+      body: '차트·뉴스·종목토론을 한 화면에서 조회.\n\n📈 차트 — TradingView 위젯 임베드 (KRX:종목코드)\n📰 뉴스 — 네이버/다음 금융 + Google 뉴스 새 탭 링크\n💬 종목토론 — 네이버/다음/팍스넷 새 탭 링크\n\n네이버/다음 금융은 iframe 임베드를 차단하므로 새 탭으로 열림.\n닫기: ✕ / 외부 클릭 / Esc'
     },
     star_rating: {
       title: '신뢰도 등급 (★★★★/★★★/★★/★)',
@@ -1968,6 +2154,22 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
     if (e.target === $('#event-overlay')) closeEventOverlay();
   });
 
+  // Analysis 패널 핸들러
+  $('#analysis-close').addEventListener('click', closeAnalysisOverlay);
+  $('#analysis-overlay').addEventListener('click', (e) => {
+    if (e.target === $('#analysis-overlay')) closeAnalysisOverlay();
+  });
+  document.querySelectorAll('.analysis-tab').forEach(t => {
+    t.addEventListener('click', () => {
+      ANALYSIS_STATE.activeTab = t.dataset.tab;
+      renderAnalysisTab();
+    });
+  });
+  // Esc — event-modal + analysis-modal 둘 다 닫음 (위 keydown에서 이미 modalOverlay 처리)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAnalysisOverlay();
+  });
+
   // ============ DATA LOADING ============
   async function loadFromUrl(url) {
     try {
@@ -2302,6 +2504,7 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
           <span data-help="stock_marcap">시총 ${formatNumber(s.marcap_eok)}억원</span>
         </div>
       </div>
+      <button class="analysis-trigger" id="open-analysis" data-help="analysis_panel">🔍 분석 패널 열기 (차트·뉴스·종목토론)</button>
       ${businessHtml}
       <div>
         <div class="section-title">▸ Match Evidence (${s.match_count})</div>
@@ -2335,6 +2538,75 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
         if (m) openEventOverlay(m);
       });
     });
+    // 분석 패널 트리거
+    const trigger = $('#open-analysis');
+    if (trigger) trigger.addEventListener('click', () => openAnalysisOverlay(s));
+  }
+
+  // ===== Analysis Panel (차트/뉴스/종목토론) =====
+  const ANALYSIS_STATE = { stock: null, activeTab: 'chart' };
+
+  function openAnalysisOverlay(stock) {
+    ANALYSIS_STATE.stock = stock;
+    ANALYSIS_STATE.activeTab = 'chart';
+    $('#analysis-title').innerHTML = escapeHtml(stock.stock_name) + ' <small>' + stock.stock_code + ' · ' + escapeHtml(stock.market) + '</small>';
+    renderAnalysisTab();
+    $('#analysis-overlay').classList.add('visible');
+    hideTooltip();
+  }
+  function closeAnalysisOverlay() {
+    $('#analysis-overlay').classList.remove('visible');
+    // iframe 정리 — 백그라운드 리소스 해제
+    $('#analysis-body').innerHTML = '';
+  }
+  function renderAnalysisTab() {
+    const s = ANALYSIS_STATE.stock;
+    if (!s) return;
+    const code = s.stock_code;
+    const name = s.stock_name;
+    const market = (s.market || '').toUpperCase();
+    // TradingView prefix — KOSPI/KOSDAQ/KOSDAQ GLOBAL 모두 KRX:코드
+    const tvSymbol = 'KRX:' + code;
+    const body = $('#analysis-body');
+    // 탭 active 상태 동기화
+    document.querySelectorAll('.analysis-tab').forEach(t =>
+      t.classList.toggle('active', t.dataset.tab === ANALYSIS_STATE.activeTab));
+
+    if (ANALYSIS_STATE.activeTab === 'chart') {
+      // TradingView 위젯 embed
+      const url = 'https://s.tradingview.com/widgetembed/?symbol=' + encodeURIComponent(tvSymbol)
+                + '&interval=D&theme=dark&style=1&locale=kr&hide_side_toolbar=0&allow_symbol_change=1&saveimage=1';
+      body.innerHTML = '<iframe src="' + url + '" title="TradingView Chart"></iframe>';
+    } else if (ANALYSIS_STATE.activeTab === 'news') {
+      body.innerHTML = renderLinkPane('news', code, name);
+    } else if (ANALYSIS_STATE.activeTab === 'forum') {
+      body.innerHTML = renderLinkPane('forum', code, name);
+    }
+  }
+  function renderLinkPane(kind, code, name) {
+    const links = (kind === 'news')
+      ? [
+        { name: '네이버 금융 — 뉴스·공시',  url: 'https://finance.naver.com/item/news.naver?code=' + code },
+        { name: '네이버 금융 — 종목 메인',  url: 'https://finance.naver.com/item/main.naver?code=' + code },
+        { name: '다음 금융 — 종목',        url: 'https://finance.daum.net/quotes/A' + code },
+        { name: 'Google 검색 — 종목명 뉴스', url: 'https://www.google.com/search?q=' + encodeURIComponent(name + ' 뉴스') + '&tbm=nws' }
+      ]
+      : [
+        { name: '네이버 금융 — 종목토론실', url: 'https://finance.naver.com/item/board.naver?code=' + code },
+        { name: '다음 금융 — 종목토론',      url: 'https://finance.daum.net/quotes/A' + code + '/discussion' },
+        { name: '팍스넷 — 종목토론방',       url: 'https://paxnet.koscom.co.kr/stock/' + code + '/talkList' }
+      ];
+    const note = (kind === 'news')
+      ? '네이버/다음 금융이 iframe 임베드를 차단하여 새 탭으로 엽니다.'
+      : '종목토론 페이지는 모두 iframe 임베드 차단 정책으로 새 탭에서 열립니다.';
+    return '<div class="analysis-pane">'
+      + '<div class="analysis-note">ⓘ ' + note + '</div>'
+      + links.map(l => '<a class="analysis-link-card" href="' + escapeHtml(l.url) + '" target="_blank" rel="noopener">'
+                    + '<span class="arrow">↗</span>'
+                    + '<div class="name">' + escapeHtml(l.name) + '</div>'
+                    + '<div class="url">' + escapeHtml(l.url) + '</div>'
+                    + '</a>').join('')
+      + '</div>';
   }
 
   // ===== Phase B 오버레이 모달 =====
