@@ -454,13 +454,16 @@
   }
 
   async function executeScan() {
-    if (STATE.keywords.length === 0) { log('⚠ 키워드가 비어있음 — 적어도 1개 추가하세요', 'warn'); return; }
     const activeSrc = Object.entries(STATE.sources).filter(([_, v]) => v).map(([k]) => k);
     if (activeSrc.length === 0) { log('⚠ 활성 소스가 없음 — 적어도 1개 토글하세요', 'warn'); return; }
 
     $('#btn-scan').disabled = true;
     $('#btn-scan').textContent = '⏳ SCANNING...';
-    log(`▶ 스캔 시작 · sources=${activeSrc.join(',')} · keywords=${STATE.keywords.join(',')} · timespan=${STATE.timespan}`, 'info');
+    const kwLabel = STATE.keywords.length === 0 ? '(없음 — 전체 패스)' : STATE.keywords.join(',');
+    log(`▶ 스캔 시작 · sources=${activeSrc.join(',')} · keywords=${kwLabel} · timespan=${STATE.timespan}`, 'info');
+    if (STATE.keywords.length === 0) {
+      log('  ⓘ 키워드 미지정 모드 — 모든 이벤트 통과 (Discover 용)', 'warn');
+    }
     log(`▶ 데이터셋 fetch: ${STATE.dataset}`, 'info');
 
     let allEvents = [];
