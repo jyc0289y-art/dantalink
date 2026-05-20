@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Virtual env
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Secrets
+.env
+*.key
+*.session
+*.session-journal
+
+# Output / cache
+events.json
+*.log
+output/
+cache/
+
+# Packaged exports (Claude 챗 검토용 zip 등)
+dantalink.zip
+*.zip
+
+# Internal-only docs (운영자 개인 의료/생활 정보 등)
+docs/internal/
+
+# Claude Code
+.claude/
+
+# 산출물 (라이브 수집 결과 + 매칭 결과 — sample만 공개)
+# events_*.json, matches_*.json 은 일부 공개 (sample 용도)
+# 더 민감한 라이브 수집 결과는 별도 .gitignore 추가 검토
+events_*.json
+!events_demo.json
+!events_rss.json
+matches_*.json
+!matches_demo.json
+!matches_live.json

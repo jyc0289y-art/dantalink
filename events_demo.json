@@ -1,0 +1,41 @@
+[
+  {
+    "event_id": "demo_aijin",
+    "source": "rss",
+    "title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+    "body": "세계보건기구가 우간다 분디부교 지역의 에볼라 출혈열 발생을 국제공중보건위기상황(PHEIC)으로 선포했다. 백신 관련주에 매수세 유입.",
+    "url": "https://example.com/aijin",
+    "published_at": "2026-05-20T03:00:00+00:00",
+    "collected_at": "2026-05-20T04:00:00+00:00",
+    "category": "health",
+    "keywords": ["WHO", "PHEIC", "에볼라", "분디부교", "백신", "임상시험"],
+    "entities": ["WHO", "Uganda", "Bundibugyo"],
+    "raw_payload": {"demo": true}
+  },
+  {
+    "event_id": "demo_samtable",
+    "source": "rss",
+    "title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+    "body": "Sam Altman이 한국을 방문하여 정부 주요 인사와 회담. AI 기술 협력 강조.",
+    "url": "https://example.com/altman",
+    "published_at": "2026-05-20T05:00:00+00:00",
+    "collected_at": "2026-05-20T05:30:00+00:00",
+    "category": "tech",
+    "keywords": ["OpenAI", "방한", "AI", "회담", "인공지능", "CEO"],
+    "entities": ["Sam Altman", "OpenAI"],
+    "raw_payload": {"demo": true}
+  },
+  {
+    "event_id": "demo_hormuz",
+    "source": "rss",
+    "title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+    "body": "이스라엘이 이란 핵시설 타격 시사. 호르무즈 해협 봉쇄 가능성으로 국제유가 급등. 한국 정유주에 영향 예상.",
+    "url": "https://example.com/hormuz",
+    "published_at": "2026-05-20T06:00:00+00:00",
+    "collected_at": "2026-05-20T06:30:00+00:00",
+    "category": "geopolitical",
+    "keywords": ["이란", "이스라엘", "호르무즈", "공격", "미사일", "전쟁"],
+    "entities": ["Iran", "Israel", "Hormuz"],
+    "raw_payload": {"demo": true}
+  }
+]

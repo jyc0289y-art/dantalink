@@ -1,0 +1,2371 @@
+{
+  "generated_at": "2026-05-20T13:26:32.060242",
+  "input_events": "events_demo.json",
+  "event_count": 3,
+  "stock_db_count": 2878,
+  "filter": {
+    "min_marcap_eok": 100,
+    "max_per_token": 5,
+    "max_per_keyword": 5
+  },
+  "top_stocks": [
+    {
+      "stock_code": "185490",
+      "stock_name": "아이진",
+      "market": "KOSDAQ",
+      "marcap_eok": 966,
+      "total_score": 0.55,
+      "max_score": 0.55,
+      "match_count": 1,
+      "layers": [
+        "phonological"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.55,
+          "matched_on": "아이진"
+        }
+      ]
+    },
+    {
+      "stock_code": "072020",
+      "stock_name": "중앙백신",
+      "market": "KOSDAQ",
+      "marcap_eok": 921,
+      "total_score": 0.5,
+      "max_score": 0.5,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.5,
+          "matched_on": "백신"
+        }
+      ]
+    },
+    {
+      "stock_code": "261780",
+      "stock_name": "차백신연구소",
+      "market": "KOSDAQ",
+      "marcap_eok": 918,
+      "total_score": 0.5,
+      "max_score": 0.5,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.5,
+          "matched_on": "백신"
+        }
+      ]
+    },
+    {
+      "stock_code": "084850",
+      "stock_name": "아이티엠반도체",
+      "market": "KOSDAQ GLOBAL",
+      "marcap_eok": 3087,
+      "total_score": 0.8,
+      "max_score": 0.4,
+      "match_count": 2,
+      "layers": [
+        "phonological",
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.4,
+          "matched_on": "아이진"
+        },
+        {
+          "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+          "event_category": "tech",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "반도체"
+        }
+      ]
+    },
+    {
+      "stock_code": "389500",
+      "stock_name": "에스비비테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 4851,
+      "total_score": 0.7,
+      "max_score": 0.4,
+      "match_count": 2,
+      "layers": [
+        "phonological",
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.3,
+          "matched_on": "에볼라"
+        },
+        {
+          "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+          "event_category": "tech",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "테크"
+        }
+      ]
+    },
+    {
+      "stock_code": "206650",
+      "stock_name": "유바이오로직스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3951,
+      "total_score": 0.7,
+      "max_score": 0.4,
+      "match_count": 2,
+      "layers": [
+        "phonological",
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "바이오"
+        },
+        {
+          "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+          "event_category": "geopolitical",
+          "layer": "phonological",
+          "score": 0.3,
+          "matched_on": "유가"
+        }
+      ]
+    },
+    {
+      "stock_code": "059270",
+      "stock_name": "해성에어로보틱스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1124,
+      "total_score": 0.7,
+      "max_score": 0.4,
+      "match_count": 2,
+      "layers": [
+        "phonological",
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+          "event_category": "geopolitical",
+          "layer": "phonological",
+          "score": 0.3,
+          "matched_on": "해협"
+        },
+        {
+          "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+          "event_category": "geopolitical",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "에어로"
+        }
+      ]
+    },
+    {
+      "stock_code": "099190",
+      "stock_name": "아이센스",
+      "market": "KOSDAQ",
+      "marcap_eok": 4987,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "phonological"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.4,
+          "matched_on": "아이진"
+        }
+      ]
+    },
+    {
+      "stock_code": "456010",
+      "stock_name": "아이씨티케이",
+      "market": "KOSDAQ",
+      "marcap_eok": 3135,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "phonological"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.4,
+          "matched_on": "아이진"
+        }
+      ]
+    },
+    {
+      "stock_code": "309710",
+      "stock_name": "아이티켐",
+      "market": "KOSDAQ",
+      "marcap_eok": 2684,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "phonological"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "phonological",
+          "score": 0.4,
+          "matched_on": "아이진"
+        }
+      ]
+    },
+    {
+      "stock_code": "950210",
+      "stock_name": "프레스티지바이오파마",
+      "market": "KOSPI",
+      "marcap_eok": 4399,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "바이오"
+        }
+      ]
+    },
+    {
+      "stock_code": "187660",
+      "stock_name": "페니트리움바이오",
+      "market": "KOSDAQ",
+      "marcap_eok": 4315,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "바이오"
+        }
+      ]
+    },
+    {
+      "stock_code": "0120G0",
+      "stock_name": "삼양바이오팜",
+      "market": "KOSPI",
+      "marcap_eok": 4283,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "바이오"
+        }
+      ]
+    },
+    {
+      "stock_code": "042520",
+      "stock_name": "한스바이오메드",
+      "market": "KOSDAQ",
+      "marcap_eok": 4036,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "바이오"
+        }
+      ]
+    },
+    {
+      "stock_code": "047920",
+      "stock_name": "HLB제약",
+      "market": "KOSDAQ",
+      "marcap_eok": 4248,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "제약"
+        }
+      ]
+    },
+    {
+      "stock_code": "009290",
+      "stock_name": "광동제약",
+      "market": "KOSPI",
+      "marcap_eok": 3551,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "제약"
+        }
+      ]
+    },
+    {
+      "stock_code": "033270",
+      "stock_name": "유나이티드제약",
+      "market": "KOSPI",
+      "marcap_eok": 3028,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "제약"
+        }
+      ]
+    },
+    {
+      "stock_code": "005500",
+      "stock_name": "삼진제약",
+      "market": "KOSPI",
+      "marcap_eok": 2930,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "제약"
+        }
+      ]
+    },
+    {
+      "stock_code": "067080",
+      "stock_name": "대화제약",
+      "market": "KOSDAQ",
+      "marcap_eok": 2366,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "제약"
+        }
+      ]
+    },
+    {
+      "stock_code": "389650",
+      "stock_name": "넥스트바이오메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 3845,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "메디"
+        }
+      ]
+    },
+    {
+      "stock_code": "041920",
+      "stock_name": "메디아나",
+      "market": "KOSDAQ",
+      "marcap_eok": 2939,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "메디"
+        }
+      ]
+    },
+    {
+      "stock_code": "394420",
+      "stock_name": "리센스메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 2838,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "메디"
+        }
+      ]
+    },
+    {
+      "stock_code": "032620",
+      "stock_name": "GC메디아이",
+      "market": "KOSDAQ",
+      "marcap_eok": 1876,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "메디"
+        }
+      ]
+    },
+    {
+      "stock_code": "240550",
+      "stock_name": "동방메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 1597,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "메디"
+        }
+      ]
+    },
+    {
+      "stock_code": "092730",
+      "stock_name": "네오팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 2877,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "팜"
+        }
+      ]
+    },
+    {
+      "stock_code": "106190",
+      "stock_name": "하이텍팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 1623,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "팜"
+        }
+      ]
+    },
+    {
+      "stock_code": "027710",
+      "stock_name": "팜스토리",
+      "market": "KOSDAQ",
+      "marcap_eok": 1433,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "팜"
+        }
+      ]
+    },
+    {
+      "stock_code": "036580",
+      "stock_name": "팜스코",
+      "market": "KOSPI",
+      "marcap_eok": 1010,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "팜"
+        }
+      ]
+    },
+    {
+      "stock_code": "054670",
+      "stock_name": "대한뉴팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 890,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "팜"
+        }
+      ]
+    },
+    {
+      "stock_code": "287840",
+      "stock_name": "인투셀",
+      "market": "KOSDAQ",
+      "marcap_eok": 4424,
+      "total_score": 0.4,
+      "max_score": 0.4,
+      "match_count": 1,
+      "layers": [
+        "semantic"
+      ],
+      "matches": [
+        {
+          "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+          "event_category": "health",
+          "layer": "semantic",
+          "score": 0.4,
+          "matched_on": "셀"
+        }
+      ]
+    }
+  ],
+  "all_candidates": [
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "230360",
+      "stock_name": "에코마케팅",
+      "market": "KOSDAQ",
+      "marcap_eok": 4963,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "에볼라",
+      "reason": "트리거 토큰 '에볼라'의 첫 음절 '에'이 종목명 '에코마케팅'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "389500",
+      "stock_name": "에스비비테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 4851,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "에볼라",
+      "reason": "트리거 토큰 '에볼라'의 첫 음절 '에'이 종목명 '에스비비테크'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "039440",
+      "stock_name": "에스티아이",
+      "market": "KOSDAQ",
+      "marcap_eok": 4179,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "에볼라",
+      "reason": "트리거 토큰 '에볼라'의 첫 음절 '에'이 종목명 '에스티아이'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "230240",
+      "stock_name": "에치에프알",
+      "market": "KOSDAQ",
+      "marcap_eok": 3826,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "에볼라",
+      "reason": "트리거 토큰 '에볼라'의 첫 음절 '에'이 종목명 '에치에프알'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "003800",
+      "stock_name": "에이스침대",
+      "market": "KOSDAQ",
+      "marcap_eok": 3516,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "에볼라",
+      "reason": "트리거 토큰 '에볼라'의 첫 음절 '에'이 종목명 '에이스침대'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "185490",
+      "stock_name": "아이진",
+      "market": "KOSDAQ",
+      "marcap_eok": 966,
+      "layer": "phonological",
+      "score": 0.55,
+      "matched_on": "아이진",
+      "reason": "트리거 토큰 '아이진'의 첫 음절 '아'이 종목명 '아이진'의 첫 음절과 일치 (exact)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "099190",
+      "stock_name": "아이센스",
+      "market": "KOSDAQ",
+      "marcap_eok": 4987,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "아이진",
+      "reason": "트리거 토큰 '아이진'의 첫 음절 '아'이 종목명 '아이센스'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "456010",
+      "stock_name": "아이씨티케이",
+      "market": "KOSDAQ",
+      "marcap_eok": 3135,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "아이진",
+      "reason": "트리거 토큰 '아이진'의 첫 음절 '아'이 종목명 '아이씨티케이'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "084850",
+      "stock_name": "아이티엠반도체",
+      "market": "KOSDAQ GLOBAL",
+      "marcap_eok": 3087,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "아이진",
+      "reason": "트리거 토큰 '아이진'의 첫 음절 '아'이 종목명 '아이티엠반도체'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "309710",
+      "stock_name": "아이티켐",
+      "market": "KOSDAQ",
+      "marcap_eok": 2684,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "아이진",
+      "reason": "트리거 토큰 '아이진'의 첫 음절 '아'이 종목명 '아이티켐'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "035150",
+      "stock_name": "백산",
+      "market": "KOSPI",
+      "marcap_eok": 2201,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "백신주",
+      "reason": "트리거 토큰 '백신주'의 첫 음절 '백'이 종목명 '백산'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "046310",
+      "stock_name": "백금T&A",
+      "market": "KOSDAQ",
+      "marcap_eok": 422,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "백신주",
+      "reason": "트리거 토큰 '백신주'의 첫 음절 '백'이 종목명 '백금T&A'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "072020",
+      "stock_name": "중앙백신",
+      "market": "KOSDAQ",
+      "marcap_eok": 921,
+      "layer": "semantic",
+      "score": 0.5,
+      "matched_on": "백신",
+      "reason": "이벤트 키워드 '백신'가 종목명 '중앙백신'에 직접 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "261780",
+      "stock_name": "차백신연구소",
+      "market": "KOSDAQ",
+      "marcap_eok": 918,
+      "layer": "semantic",
+      "score": 0.5,
+      "matched_on": "백신",
+      "reason": "이벤트 키워드 '백신'가 종목명 '차백신연구소'에 직접 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "950210",
+      "stock_name": "프레스티지바이오파마",
+      "market": "KOSPI",
+      "marcap_eok": 4399,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "바이오",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '바이오'가 종목명 '프레스티지바이오파마'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "187660",
+      "stock_name": "페니트리움바이오",
+      "market": "KOSDAQ",
+      "marcap_eok": 4315,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "바이오",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '바이오'가 종목명 '페니트리움바이오'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "0120G0",
+      "stock_name": "삼양바이오팜",
+      "market": "KOSPI",
+      "marcap_eok": 4283,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "바이오",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '바이오'가 종목명 '삼양바이오팜'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "042520",
+      "stock_name": "한스바이오메드",
+      "market": "KOSDAQ",
+      "marcap_eok": 4036,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "바이오",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '바이오'가 종목명 '한스바이오메드'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "206650",
+      "stock_name": "유바이오로직스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3951,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "바이오",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '바이오'가 종목명 '유바이오로직스'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "047920",
+      "stock_name": "HLB제약",
+      "market": "KOSDAQ",
+      "marcap_eok": 4248,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "제약",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '제약'가 종목명 'HLB제약'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "009290",
+      "stock_name": "광동제약",
+      "market": "KOSPI",
+      "marcap_eok": 3551,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "제약",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '제약'가 종목명 '광동제약'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "033270",
+      "stock_name": "유나이티드제약",
+      "market": "KOSPI",
+      "marcap_eok": 3028,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "제약",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '제약'가 종목명 '유나이티드제약'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "005500",
+      "stock_name": "삼진제약",
+      "market": "KOSPI",
+      "marcap_eok": 2930,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "제약",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '제약'가 종목명 '삼진제약'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "067080",
+      "stock_name": "대화제약",
+      "market": "KOSDAQ",
+      "marcap_eok": 2366,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "제약",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '제약'가 종목명 '대화제약'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "389650",
+      "stock_name": "넥스트바이오메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 3845,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "메디",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '메디'가 종목명 '넥스트바이오메디컬'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "041920",
+      "stock_name": "메디아나",
+      "market": "KOSDAQ",
+      "marcap_eok": 2939,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "메디",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '메디'가 종목명 '메디아나'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "394420",
+      "stock_name": "리센스메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 2838,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "메디",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '메디'가 종목명 '리센스메디컬'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "032620",
+      "stock_name": "GC메디아이",
+      "market": "KOSDAQ",
+      "marcap_eok": 1876,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "메디",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '메디'가 종목명 'GC메디아이'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "240550",
+      "stock_name": "동방메디컬",
+      "market": "KOSDAQ",
+      "marcap_eok": 1597,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "메디",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '메디'가 종목명 '동방메디컬'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "092730",
+      "stock_name": "네오팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 2877,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "팜",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '팜'가 종목명 '네오팜'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "106190",
+      "stock_name": "하이텍팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 1623,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "팜",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '팜'가 종목명 '하이텍팜'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "027710",
+      "stock_name": "팜스토리",
+      "market": "KOSDAQ",
+      "marcap_eok": 1433,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "팜",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '팜'가 종목명 '팜스토리'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "036580",
+      "stock_name": "팜스코",
+      "market": "KOSPI",
+      "marcap_eok": 1010,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "팜",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '팜'가 종목명 '팜스코'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "054670",
+      "stock_name": "대한뉴팜",
+      "market": "KOSDAQ",
+      "marcap_eok": 890,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "팜",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '팜'가 종목명 '대한뉴팜'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "287840",
+      "stock_name": "인투셀",
+      "market": "KOSDAQ",
+      "marcap_eok": 4424,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "셀",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '셀'가 종목명 '인투셀'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "308430",
+      "stock_name": "셀비온",
+      "market": "KOSDAQ",
+      "marcap_eok": 3189,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "셀",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '셀'가 종목명 '셀비온'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "144510",
+      "stock_name": "지씨셀",
+      "market": "KOSDAQ",
+      "marcap_eok": 3103,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "셀",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '셀'가 종목명 '지씨셀'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "108860",
+      "stock_name": "셀바스AI",
+      "market": "KOSDAQ",
+      "marcap_eok": 2740,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "셀",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '셀'가 종목명 '셀바스AI'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "010580",
+      "stock_name": "에스엠벡셀",
+      "market": "KOSPI",
+      "marcap_eok": 2225,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "셀",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '셀'가 종목명 '에스엠벡셀'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "071200",
+      "stock_name": "인피니트헬스케어",
+      "market": "KOSDAQ",
+      "marcap_eok": 1940,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "헬스",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '헬스'가 종목명 '인피니트헬스케어'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "025620",
+      "stock_name": "차AI헬스케어",
+      "market": "KOSPI",
+      "marcap_eok": 1234,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "헬스",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '헬스'가 종목명 '차AI헬스케어'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "036220",
+      "stock_name": "오상헬스케어",
+      "market": "KOSDAQ",
+      "marcap_eok": 1062,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "헬스",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '헬스'가 종목명 '오상헬스케어'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "208370",
+      "stock_name": "셀바스헬스케어",
+      "market": "KOSDAQ",
+      "marcap_eok": 938,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "헬스",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '헬스'가 종목명 '셀바스헬스케어'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "0010V0",
+      "stock_name": "제이피아이헬스케어",
+      "market": "KOSDAQ",
+      "marcap_eok": 492,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "헬스",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '헬스'가 종목명 '제이피아이헬스케어'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "053690",
+      "stock_name": "한미글로벌",
+      "market": "KOSPI",
+      "marcap_eok": 2334,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "한미",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '한미'가 종목명 '한미글로벌'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "234690",
+      "stock_name": "녹십자웰빙",
+      "market": "KOSDAQ",
+      "marcap_eok": 1795,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "녹십자",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '녹십자'가 종목명 '녹십자웰빙'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "142280",
+      "stock_name": "녹십자엠에스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1372,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "녹십자",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '녹십자'가 종목명 '녹십자엠에스'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_aijin",
+      "event_title": "WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발",
+      "event_category": "health",
+      "event_url": "https://example.com/aijin",
+      "stock_code": "005257",
+      "stock_name": "녹십자홀딩스2우",
+      "market": "KOSPI",
+      "marcap_eok": 214,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "녹십자",
+      "reason": "이벤트 카테고리 'health'의 테마 키워드 '녹십자'가 종목명 '녹십자홀딩스2우'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "007540",
+      "stock_name": "샘표",
+      "market": "KOSPI",
+      "marcap_eok": 1337,
+      "layer": "phonological",
+      "score": 0.21,
+      "matched_on": "샘",
+      "reason": "트리거 토큰 '샘'의 첫 음절 '샘'이 종목명 '샘표'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "248170",
+      "stock_name": "샘표식품",
+      "market": "KOSPI",
+      "marcap_eok": 1144,
+      "layer": "phonological",
+      "score": 0.21,
+      "matched_on": "샘",
+      "reason": "트리거 토큰 '샘'의 첫 음절 '샘'이 종목명 '샘표식품'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "459550",
+      "stock_name": "알트",
+      "market": "KOSDAQ",
+      "marcap_eok": 490,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "알트먼",
+      "reason": "트리거 토큰 '알트먼'의 첫 음절 '알'이 종목명 '알트'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "001780",
+      "stock_name": "알루코",
+      "market": "KOSPI",
+      "marcap_eok": 2329,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "알트먼",
+      "reason": "트리거 토큰 '알트먼'의 첫 음절 '알'이 종목명 '알루코'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "140670",
+      "stock_name": "알에스오토메이션",
+      "market": "KOSDAQ",
+      "marcap_eok": 1858,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "알트먼",
+      "reason": "트리거 토큰 '알트먼'의 첫 음절 '알'이 종목명 '알에스오토메이션'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "131370",
+      "stock_name": "알서포트",
+      "market": "KOSDAQ",
+      "marcap_eok": 1140,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "알트먼",
+      "reason": "트리거 토큰 '알트먼'의 첫 음절 '알'이 종목명 '알서포트'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "117670",
+      "stock_name": "알파칩스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1050,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "알트먼",
+      "reason": "트리거 토큰 '알트먼'의 첫 음절 '알'이 종목명 '알파칩스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "040420",
+      "stock_name": "정상제이엘에스",
+      "market": "KOSDAQ",
+      "marcap_eok": 898,
+      "layer": "phonological",
+      "score": 0.4,
+      "matched_on": "정상회담",
+      "reason": "트리거 토큰 '정상회담'의 첫 음절 '정'이 종목명 '정상제이엘에스'의 첫 음절과 일치 (first2)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "208140",
+      "stock_name": "정다운",
+      "market": "KOSDAQ",
+      "marcap_eok": 778,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "정상회담",
+      "reason": "트리거 토큰 '정상회담'의 첫 음절 '정'이 종목명 '정다운'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "045510",
+      "stock_name": "정원엔시스",
+      "market": "KOSDAQ",
+      "marcap_eok": 323,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "정상회담",
+      "reason": "트리거 토큰 '정상회담'의 첫 음절 '정'이 종목명 '정원엔시스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "254490",
+      "stock_name": "미래반도체",
+      "market": "KOSDAQ",
+      "marcap_eok": 4310,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "반도체",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '반도체'가 종목명 '미래반도체'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "452430",
+      "stock_name": "사피엔반도체",
+      "market": "KOSDAQ",
+      "marcap_eok": 3608,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "반도체",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '반도체'가 종목명 '사피엔반도체'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "084850",
+      "stock_name": "아이티엠반도체",
+      "market": "KOSDAQ GLOBAL",
+      "marcap_eok": 3087,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "반도체",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '반도체'가 종목명 '아이티엠반도체'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "432720",
+      "stock_name": "퀄리타스반도체",
+      "market": "KOSDAQ",
+      "marcap_eok": 2473,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "반도체",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '반도체'가 종목명 '퀄리타스반도체'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "102120",
+      "stock_name": "어보브반도체",
+      "market": "KOSDAQ",
+      "marcap_eok": 2063,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "반도체",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '반도체'가 종목명 '어보브반도체'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "298830",
+      "stock_name": "슈어소프트테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 3256,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "소프트",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '소프트'가 종목명 '슈어소프트테크'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "047560",
+      "stock_name": "이스트소프트",
+      "market": "KOSDAQ",
+      "marcap_eok": 1329,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "소프트",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '소프트'가 종목명 '이스트소프트'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "051160",
+      "stock_name": "지어소프트",
+      "market": "KOSDAQ",
+      "marcap_eok": 1123,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "소프트",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '소프트'가 종목명 '지어소프트'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "443670",
+      "stock_name": "에스피소프트",
+      "market": "KOSDAQ",
+      "marcap_eok": 1090,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "소프트",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '소프트'가 종목명 '에스피소프트'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "100030",
+      "stock_name": "인지소프트",
+      "market": "KOSDAQ",
+      "marcap_eok": 618,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "소프트",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '소프트'가 종목명 '인지소프트'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "389500",
+      "stock_name": "에스비비테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 4851,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "테크",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '테크'가 종목명 '에스비비테크'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "004710",
+      "stock_name": "한솔테크닉스",
+      "market": "KOSPI",
+      "marcap_eok": 4266,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "테크",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '테크'가 종목명 '한솔테크닉스'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "394280",
+      "stock_name": "오픈엣지테크놀로지",
+      "market": "KOSDAQ",
+      "marcap_eok": 3849,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "테크",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '테크'가 종목명 '오픈엣지테크놀로지'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "042370",
+      "stock_name": "비츠로테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 3537,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "테크",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '테크'가 종목명 '비츠로테크'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "089980",
+      "stock_name": "상아프론테크",
+      "market": "KOSDAQ",
+      "marcap_eok": 3374,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "테크",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '테크'가 종목명 '상아프론테크'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "138080",
+      "stock_name": "오이솔루션",
+      "market": "KOSDAQ",
+      "marcap_eok": 4283,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "솔루션",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '솔루션'가 종목명 '오이솔루션'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "151860",
+      "stock_name": "KG에코솔루션",
+      "market": "KOSDAQ",
+      "marcap_eok": 2832,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "솔루션",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '솔루션'가 종목명 'KG에코솔루션'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "474650",
+      "stock_name": "링크솔루션",
+      "market": "KOSDAQ",
+      "marcap_eok": 2793,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "솔루션",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '솔루션'가 종목명 '링크솔루션'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "086820",
+      "stock_name": "바이오솔루션",
+      "market": "KOSDAQ",
+      "marcap_eok": 2222,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "솔루션",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '솔루션'가 종목명 '바이오솔루션'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "011690",
+      "stock_name": "와이투솔루션",
+      "market": "KOSPI",
+      "marcap_eok": 2070,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "솔루션",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '솔루션'가 종목명 '와이투솔루션'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "025770",
+      "stock_name": "한국정보통신",
+      "market": "KOSDAQ",
+      "marcap_eok": 3333,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "정보",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '정보'가 종목명 '한국정보통신'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "036800",
+      "stock_name": "나이스정보통신",
+      "market": "KOSDAQ",
+      "marcap_eok": 2780,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "정보",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '정보'가 종목명 '나이스정보통신'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "053300",
+      "stock_name": "한국정보인증",
+      "market": "KOSDAQ",
+      "marcap_eok": 2271,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "정보",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '정보'가 종목명 '한국정보인증'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "049720",
+      "stock_name": "고려신용정보",
+      "market": "KOSDAQ",
+      "marcap_eok": 1407,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "정보",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '정보'가 종목명 '고려신용정보'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "033230",
+      "stock_name": "인성정보",
+      "market": "KOSDAQ",
+      "marcap_eok": 818,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "정보",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '정보'가 종목명 '인성정보'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "265520",
+      "stock_name": "AP시스템",
+      "market": "KOSDAQ",
+      "marcap_eok": 3635,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "시스템",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '시스템'가 종목명 'AP시스템'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "126700",
+      "stock_name": "하이비젼시스템",
+      "market": "KOSDAQ",
+      "marcap_eok": 2173,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "시스템",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '시스템'가 종목명 '하이비젼시스템'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "199430",
+      "stock_name": "케이엔알시스템",
+      "market": "KOSDAQ",
+      "marcap_eok": 2000,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "시스템",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '시스템'가 종목명 '케이엔알시스템'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "474610",
+      "stock_name": "RF시스템즈",
+      "market": "KOSDAQ",
+      "marcap_eok": 1753,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "시스템",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '시스템'가 종목명 'RF시스템즈'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "071280",
+      "stock_name": "로체시스템즈",
+      "market": "KOSDAQ",
+      "marcap_eok": 1268,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "시스템",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '시스템'가 종목명 '로체시스템즈'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "080580",
+      "stock_name": "오킨스전자",
+      "market": "KOSDAQ",
+      "marcap_eok": 4324,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "전자",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '전자'가 종목명 '오킨스전자'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "012860",
+      "stock_name": "모베이스전자",
+      "market": "KOSDAQ",
+      "marcap_eok": 3003,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "전자",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '전자'가 종목명 '모베이스전자'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "005680",
+      "stock_name": "삼영전자",
+      "market": "KOSPI",
+      "marcap_eok": 2516,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "전자",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '전자'가 종목명 '삼영전자'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "072950",
+      "stock_name": "빛샘전자",
+      "market": "KOSDAQ",
+      "marcap_eok": 1112,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "전자",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '전자'가 종목명 '빛샘전자'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "036010",
+      "stock_name": "아비코전자",
+      "market": "KOSDAQ",
+      "marcap_eok": 1097,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "전자",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '전자'가 종목명 '아비코전자'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "068930",
+      "stock_name": "디지털대성",
+      "market": "KOSDAQ",
+      "marcap_eok": 2239,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "디지털",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '디지털'가 종목명 '디지털대성'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_samtable",
+      "event_title": "샘 알트먼 OpenAI CEO 방한...AI 정상회담 참석, 한국 AI 기업과 협력 모색",
+      "event_category": "tech",
+      "event_url": "https://example.com/altman",
+      "stock_code": "038950",
+      "stock_name": "파인디지털",
+      "market": "KOSDAQ",
+      "marcap_eok": 326,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "디지털",
+      "reason": "이벤트 카테고리 'tech'의 테마 키워드 '디지털'가 종목명 '파인디지털'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "111110",
+      "stock_name": "호전실업",
+      "market": "KOSPI",
+      "marcap_eok": 675,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "호르무즈",
+      "reason": "트리거 토큰 '호르무즈'의 첫 음절 '호'이 종목명 '호전실업'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "008775",
+      "stock_name": "호텔신라우",
+      "market": "KOSPI",
+      "marcap_eok": 262,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "호르무즈",
+      "reason": "트리거 토큰 '호르무즈'의 첫 음절 '호'이 종목명 '호텔신라우'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "034810",
+      "stock_name": "해성산업",
+      "market": "KOSDAQ",
+      "marcap_eok": 2163,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "해협",
+      "reason": "트리거 토큰 '해협'의 첫 음절 '해'이 종목명 '해성산업'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "101530",
+      "stock_name": "해태제과식품",
+      "market": "KOSPI",
+      "marcap_eok": 1834,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "해협",
+      "reason": "트리거 토큰 '해협'의 첫 음절 '해'이 종목명 '해태제과식품'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "076610",
+      "stock_name": "해성옵틱스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1178,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "해협",
+      "reason": "트리거 토큰 '해협'의 첫 음절 '해'이 종목명 '해성옵틱스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "059270",
+      "stock_name": "해성에어로보틱스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1124,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "해협",
+      "reason": "트리거 토큰 '해협'의 첫 음절 '해'이 종목명 '해성에어로보틱스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "424870",
+      "stock_name": "이뮨온시아",
+      "market": "KOSDAQ",
+      "marcap_eok": 3919,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "이란",
+      "reason": "트리거 토큰 '이란'의 첫 음절 '이'이 종목명 '이뮨온시아'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "005950",
+      "stock_name": "이수화학",
+      "market": "KOSPI",
+      "marcap_eok": 3521,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "이란",
+      "reason": "트리거 토큰 '이란'의 첫 음절 '이'이 종목명 '이수화학'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "035810",
+      "stock_name": "이지홀딩스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3374,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "이란",
+      "reason": "트리거 토큰 '이란'의 첫 음절 '이'이 종목명 '이지홀딩스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "054210",
+      "stock_name": "이랜텍",
+      "market": "KOSDAQ",
+      "marcap_eok": 3093,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "이란",
+      "reason": "트리거 토큰 '이란'의 첫 음절 '이'이 종목명 '이랜텍'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "462350",
+      "stock_name": "이노스페이스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3013,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "이란",
+      "reason": "트리거 토큰 '이란'의 첫 음절 '이'이 종목명 '이노스페이스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "041190",
+      "stock_name": "우리기술투자",
+      "market": "KOSDAQ",
+      "marcap_eok": 4897,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "우려",
+      "reason": "트리거 토큰 '우려'의 첫 음절 '우'이 종목명 '우리기술투자'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "105840",
+      "stock_name": "우진",
+      "market": "KOSPI",
+      "marcap_eok": 4060,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "우려",
+      "reason": "트리거 토큰 '우려'의 첫 음절 '우'이 종목명 '우진'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "065680",
+      "stock_name": "우주일렉트로",
+      "market": "KOSDAQ",
+      "marcap_eok": 3461,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "우려",
+      "reason": "트리거 토큰 '우려'의 첫 음절 '우'이 종목명 '우주일렉트로'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "046970",
+      "stock_name": "우리로",
+      "market": "KOSDAQ",
+      "marcap_eok": 3458,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "우려",
+      "reason": "트리거 토큰 '우려'의 첫 음절 '우'이 종목명 '우리로'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "457550",
+      "stock_name": "우진엔텍",
+      "market": "KOSDAQ",
+      "marcap_eok": 2106,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "우려",
+      "reason": "트리거 토큰 '우려'의 첫 음절 '우'이 종목명 '우진엔텍'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "014830",
+      "stock_name": "유니드",
+      "market": "KOSPI",
+      "marcap_eok": 4798,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "유가",
+      "reason": "트리거 토큰 '유가'의 첫 음절 '유'이 종목명 '유니드'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "001200",
+      "stock_name": "유진투자증권",
+      "market": "KOSPI",
+      "marcap_eok": 4756,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "유가",
+      "reason": "트리거 토큰 '유가'의 첫 음절 '유'이 종목명 '유진투자증권'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "179900",
+      "stock_name": "유티아이",
+      "market": "KOSDAQ",
+      "marcap_eok": 4166,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "유가",
+      "reason": "트리거 토큰 '유가'의 첫 음절 '유'이 종목명 '유티아이'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "206650",
+      "stock_name": "유바이오로직스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3951,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "유가",
+      "reason": "트리거 토큰 '유가'의 첫 음절 '유'이 종목명 '유바이오로직스'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "086390",
+      "stock_name": "유니테스트",
+      "market": "KOSDAQ",
+      "marcap_eok": 3227,
+      "layer": "phonological",
+      "score": 0.3,
+      "matched_on": "유가",
+      "reason": "트리거 토큰 '유가'의 첫 음절 '유'이 종목명 '유니테스트'의 첫 음절과 일치 (first1)"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "274090",
+      "stock_name": "켄코아에어로스페이스",
+      "market": "KOSDAQ",
+      "marcap_eok": 3295,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "에어로",
+      "reason": "이벤트 카테고리 'geopolitical'의 테마 키워드 '에어로'가 종목명 '켄코아에어로스페이스'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "059270",
+      "stock_name": "해성에어로보틱스",
+      "market": "KOSDAQ",
+      "marcap_eok": 1124,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "에어로",
+      "reason": "이벤트 카테고리 'geopolitical'의 테마 키워드 '에어로'가 종목명 '해성에어로보틱스'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "462520",
+      "stock_name": "조선내화",
+      "market": "KOSPI",
+      "marcap_eok": 1670,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "조선",
+      "reason": "이벤트 카테고리 'geopolitical'의 테마 키워드 '조선'가 종목명 '조선내화'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "120030",
+      "stock_name": "조선선재",
+      "market": "KOSPI",
+      "marcap_eok": 1137,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "조선",
+      "reason": "이벤트 카테고리 'geopolitical'의 테마 키워드 '조선'가 종목명 '조선선재'에 포함됨"
+    },
+    {
+      "trigger_event_id": "demo_hormuz",
+      "event_title": "호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려, 유가 7% 급등",
+      "event_category": "geopolitical",
+      "event_url": "https://example.com/hormuz",
+      "stock_code": "033130",
+      "stock_name": "디지틀조선",
+      "market": "KOSDAQ",
+      "marcap_eok": 696,
+      "layer": "semantic",
+      "score": 0.4,
+      "matched_on": "조선",
+      "reason": "이벤트 카테고리 'geopolitical'의 테마 키워드 '조선'가 종목명 '디지틀조선'에 포함됨"
+    }
+  ]
+}
