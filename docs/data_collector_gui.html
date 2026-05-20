@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DantaLink :: Data Collection Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Terran Console Palette */
+    --bg-void: #050810;
+    --bg-deep: #0a0f17;
+    --bg-panel: #131820;
+    --bg-elevated: #1a212c;
+    --bg-input: #0e131b;
+    
+    --border-dim: #1f2733;
+    --border: #2a3441;
+    --border-bright: #3d4a5c;
+    
+    --ink: #c8d4e0;
+    --ink-dim: #7a8a9c;
+    --ink-faint: #4a5668;
+    
+    /* Terran signature yellow */
+    --terran: #ffb627;
+    --terran-dim: #b87f1a;
+    --terran-glow: rgba(255, 182, 39, 0.4);
+    
+    /* Cyan accent (HUD elements) */
+    --cyan: #4ecdc4;
+    --cyan-bright: #00ffe5;
+    --cyan-glow: rgba(78, 205, 196, 0.3);
+    
+    /* Status colors */
+    --red: #ff3a3a;
+    --red-glow: rgba(255, 58, 58, 0.4);
+    --green: #4ade80;
+    --green-glow: rgba(74, 222, 128, 0.4);
+    --orange: #ff8c42;
+    
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Orbitron', 'JetBrains Mono', monospace;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body {
+    height: 100%;
+    background: var(--bg-void);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+  
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      rgba(255, 182, 39, 0.015) 2px,
+      rgba(255, 182, 39, 0.015) 3px
+    );
+  }
+  
+  /* CRT flicker */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 100%);
+  }
+  
+  /* ============ LAYOUT ============ */
+  .app {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 48px 1fr 32px;
+    background: var(--bg-deep);
+  }
+  
+  /* ============ HEADER BAR ============ */
+  .header {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 16px;
+    gap: 24px;
+    position: relative;
+  }
+  
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--terran) 0%, transparent 100%);
+  }
+  
+  .logo {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    color: var(--terran);
+    text-shadow: 0 0 8px var(--terran-glow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .logo-mark {
+    width: 24px;
+    height: 24px;
+    background: var(--terran);
+    clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+    box-shadow: 0 0 12px var(--terran-glow);
+  }
+  
+  .logo-sub {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.2em;
+  }
+  
+  .header-status {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+  
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink-dim);
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: pulse 2s infinite;
+  }
+  
+  .status-dot.idle { background: var(--ink-faint); box-shadow: none; animation: none; }
+  .status-dot.warn { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+  .status-dot.err { background: var(--red); box-shadow: 0 0 8px var(--red-glow); }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  .header-time {
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+  
+  /* ============ MAIN GRID ============ */
+  .main {
+    display: grid;
+    grid-template-columns: 320px 1fr 380px;
+    gap: 1px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  
+  .panel {
+    background: var(--bg-deep);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .panel-header {
+    padding: 10px 14px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  
+  .panel-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--terran);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+  
+  .panel-title::before {
+    content: '▸ ';
+    color: var(--cyan);
+  }
+  
+  .panel-meta {
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-track { background: var(--bg-deep); }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--border-bright); }
+  
+  /* ============ LEFT PANEL: CONTROLS ============ */
+  .section {
+    margin-bottom: 24px;
+  }
+  
+  .section-label {
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .section-label::before {
+    content: '';
+    width: 12px;
+    height: 1px;
+    background: var(--terran);
+  }
+  
+  /* Source toggle */
+  .source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .source-toggle {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  
+  .source-toggle:hover {
+    border-color: var(--border-bright);
+    background: var(--bg-elevated);
+  }
+  
+  .source-toggle.active {
+    border-color: var(--terran);
+    background: linear-gradient(90deg, rgba(255, 182, 39, 0.05) 0%, transparent 100%);
+  }
+  
+  .source-toggle.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--terran);
+    box-shadow: 0 0 8px var(--terran-glow);
+  }
+  
+  .source-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    border: 1px solid var(--border);
+    font-family: var(--display);
+  }
+  
+  .source-toggle.active .source-icon {
+    color: var(--terran);
+    border-color: var(--terran);
+    background: rgba(255, 182, 39, 0.08);
+  }
+  
+  .source-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .source-name {
+    font-size: 12px;
+    color: var(--ink);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+  
+  .source-desc {
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  
+  .source-toggle.active .source-name { color: var(--terran); }
+  
+  .source-led {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+  }
+  
+  .source-toggle.active .source-led {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green-glow);
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Keyword tags */
+  .keyword-input-wrap {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .keyword-input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 8px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  
+  .keyword-input:focus {
+    border-color: var(--terran);
+    box-shadow: 0 0 0 1px var(--terran-glow);
+  }
+  
+  .btn-add {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--terran);
+    padding: 8px 12px;
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .btn-add:hover {
+    background: var(--terran);
+    color: var(--bg-void);
+    border-color: var(--terran);
+  }
+  
+  .keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+  }
+  
+  .tag-remove {
+    cursor: pointer;
+    color: var(--ink-faint);
+    font-size: 10px;
+    transition: color 0.15s;
+  }
+  
+  .tag-remove:hover { color: var(--red); }
+  
+  /* Timespan selector */
+  .timespan-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  
+  .timespan-btn {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    padding: 8px 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.1em;
+  }
+  
+  .timespan-btn:hover { border-color: var(--border-bright); color: var(--ink); }
+  
+  .timespan-btn.active {
+    background: var(--bg-elevated);
+    border-color: var(--terran);
+    color: var(--terran);
+  }
+  
+  /* Control button */
+  .control-area {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  
+  .btn-execute {
+    width: 100%;
+    background: linear-gradient(180deg, var(--terran) 0%, var(--terran-dim) 100%);
+    border: none;
+    color: var(--bg-void);
+    padding: 14px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    text-transform: uppercase;
+  }
+  
+  .btn-execute:hover {
+    box-shadow: 0 0 16px var(--terran-glow);
+  }
+  
+  .btn-execute.running {
+    background: linear-gradient(180deg, var(--red) 0%, #b02020 100%);
+    color: white;
+    animation: blink 0.8s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  
+  .btn-execute:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ============ CENTER PANEL: CONSOLE ============ */
+  .console {
+    background: var(--bg-void);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 12px 16px;
+    overflow-y: auto;
+    height: 100%;
+  }
+  
+  .console::-webkit-scrollbar { width: 6px; }
+  .console::-webkit-scrollbar-track { background: var(--bg-void); }
+  .console::-webkit-scrollbar-thumb { background: var(--border-bright); }
+  
+  .log-line {
+    display: grid;
+    grid-template-columns: 80px 70px 1fr;
+    gap: 12px;
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(42, 52, 65, 0.3);
+    animation: slideIn 0.2s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-4px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .log-time {
+    color: var(--ink-faint);
+    font-size: 11px;
+  }
+  
+  .log-level {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  
+  .log-level.info { color: var(--cyan); }
+  .log-level.ok { color: var(--green); }
+  .log-level.warn { color: var(--orange); }
+  .log-level.err { color: var(--red); }
+  .log-level.sys { color: var(--terran); }
+  
+  .log-msg {
+    color: var(--ink);
+    font-size: 12px;
+    word-break: break-word;
+  }
+  
+  .log-msg .src {
+    color: var(--terran);
+    font-weight: 500;
+  }
+  
+  .log-msg .hl {
+    color: var(--cyan);
+  }
+  
+  .log-msg .num {
+    color: var(--orange);
+  }
+  
+  /* Console boot */
+  .boot-line {
+    color: var(--terran);
+    text-shadow: 0 0 4px var(--terran-glow);
+    margin-bottom: 12px;
+    white-space: pre;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  
+  /* ============ RIGHT PANEL: EVENTS ============ */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 16px;
+  }
+  
+  .stat-cell {
+    background: var(--bg-panel);
+    padding: 10px 12px;
+  }
+  
+  .stat-label {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  
+  .stat-value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--terran);
+    line-height: 1;
+  }
+  
+  .stat-value.cyan { color: var(--cyan); }
+  
+  /* Event card */
+  .event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .event-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--terran);
+    padding: 10px 12px;
+    animation: slideIn 0.3s ease-out;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .event-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-bright);
+  }
+  
+  .event-card.HEALTH { border-left-color: var(--red); }
+  .event-card.TECH { border-left-color: var(--cyan); }
+  .event-card.PERSON { border-left-color: var(--terran); }
+  .event-card.GEOPOLITICAL { border-left-color: var(--orange); }
+  .event-card.DISASTER { border-left-color: var(--red); }
+  .event-card.REGULATORY { border-left-color: #b78fff; }
+  
+  .event-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  
+  .event-cat {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    padding: 2px 6px;
+    background: var(--bg-elevated);
+    color: var(--terran);
+  }
+  
+  .event-cat.HEALTH { color: var(--red); }
+  .event-cat.TECH { color: var(--cyan); }
+  .event-cat.PERSON { color: var(--terran); }
+  .event-cat.GEOPOLITICAL { color: var(--orange); }
+  .event-cat.DISASTER { color: var(--red); }
+  .event-cat.REGULATORY { color: #b78fff; }
+  
+  .event-src {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+  }
+  
+  .event-title {
+    font-size: 12px;
+    color: var(--ink);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  
+  .event-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--ink-faint);
+  }
+  
+  .event-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 6px;
+  }
+  
+  .event-kw {
+    font-size: 9px;
+    padding: 1px 5px;
+    background: var(--bg-input);
+    color: var(--cyan);
+    border: 1px solid var(--border);
+  }
+  
+  .empty-state {
+    text-align: center;
+    color: var(--ink-faint);
+    padding: 40px 16px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  
+  .empty-state::before {
+    content: '◇';
+    display: block;
+    font-size: 32px;
+    color: var(--border-bright);
+    margin-bottom: 12px;
+  }
+  
+  /* ============ FOOTER ============ */
+  .footer {
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+  }
+  
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: 0;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(270deg, var(--terran) 0%, transparent 100%);
+  }
+  
+  .footer-progress {
+    text-align: center;
+    color: var(--cyan);
+  }
+  
+  /* Progress bar */
+  .progress-bar {
+    height: 2px;
+    background: var(--bg-input);
+    margin-top: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: var(--terran);
+    box-shadow: 0 0 6px var(--terran-glow);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  
+  /* Diamond bullet */
+  .diamond {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--terran);
+    transform: rotate(45deg);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  
+  /* Highlight effect on new events */
+  .event-card.new {
+    animation: newEvent 0.6s ease-out;
+  }
+  
+  @keyframes newEvent {
+    0% {
+      box-shadow: 0 0 0 0 var(--terran-glow);
+      background: rgba(255, 182, 39, 0.1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px transparent;
+      background: var(--bg-panel);
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-mark"></div>
+    <div>
+      DANTALINK
+      <div class="logo-sub">DATA COLLECTION LAYER · v0.1</div>
+    </div>
+  </div>
+  
+  <div class="header-status">
+    <div class="status-item">
+      <span class="status-dot" id="sys-status"></span>
+      <span>SYSTEM <span id="sys-state">ONLINE</span></span>
+    </div>
+    <div class="status-item">
+      <span class="status-dot idle" id="net-status"></span>
+      <span>NET <span id="net-state">IDLE</span></span>
+    </div>
+    <div class="status-item">
+      <span class="status-dot idle" id="op-status"></span>
+      <span>OPS <span id="op-state">STANDBY</span></span>
+    </div>
+  </div>
+  
+  <div class="header-time" id="clock">--:--:-- UTC</div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="main">
+
+  <!-- LEFT: CONTROL PANEL -->
+  <aside class="panel">
+    <div class="panel-header">
+      <div class="panel-title">Control Panel</div>
+      <div class="panel-meta">CFG · 01</div>
+    </div>
+    <div class="panel-body" style="display: flex; flex-direction: column;">
+      
+      <div class="section">
+        <div class="section-label">Data Sources</div>
+        <div class="source-list" id="source-list">
+          <div class="source-toggle active" data-source="GDELT">
+            <div class="source-icon">G</div>
+            <div class="source-info">
+              <div class="source-name">GDELT 2.0</div>
+              <div class="source-desc">Global Events DB · ArtList API</div>
+            </div>
+            <div class="source-led"></div>
+          </div>
+          <div class="source-toggle active" data-source="RSS">
+            <div class="source-icon">R</div>
+            <div class="source-info">
+              <div class="source-name">RSS Feeds</div>
+              <div class="source-desc">Reuters · Yonhap · 외신 속보</div>
+            </div>
+            <div class="source-led"></div>
+          </div>
+          <div class="source-toggle active" data-source="KRX">
+            <div class="source-icon">K</div>
+            <div class="source-info">
+              <div class="source-name">KRX / DART</div>
+              <div class="source-desc">공시 API · 종목 정보</div>
+            </div>
+            <div class="source-led"></div>
+          </div>
+          <div class="source-toggle" data-source="TG">
+            <div class="source-icon">T</div>
+            <div class="source-info">
+              <div class="source-name">Telegram</div>
+              <div class="source-desc">속보 채널 모니터</div>
+            </div>
+            <div class="source-led"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <div class="section-label">Watch Keywords</div>
+        <div class="keyword-input-wrap">
+          <input type="text" class="keyword-input" id="kw-input" placeholder="키워드 입력 후 Enter">
+          <button class="btn-add" id="kw-add">+ ADD</button>
+        </div>
+        <div class="keyword-tags" id="kw-tags"></div>
+      </div>
+      
+      <div class="section">
+        <div class="section-label">Timespan</div>
+        <div class="timespan-grid" id="timespan">
+          <button class="timespan-btn" data-span="1h">1H</button>
+          <button class="timespan-btn" data-span="6h">6H</button>
+          <button class="timespan-btn active" data-span="24h">24H</button>
+          <button class="timespan-btn" data-span="7d">7D</button>
+        </div>
+      </div>
+      
+      <div class="control-area">
+        <button class="btn-execute" id="btn-exec">▶ INITIATE SCAN</button>
+        <div style="margin-top: 10px; font-size: 10px; color: var(--ink-faint); text-align: center; letter-spacing: 0.15em;">
+          Max Records: <span style="color: var(--cyan);">50</span> per source
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER: CONSOLE -->
+  <section class="panel">
+    <div class="panel-header">
+      <div class="panel-title">System Console</div>
+      <div class="panel-meta" id="console-meta">LINES · 0</div>
+    </div>
+    <div class="console" id="console">
+      <pre class="boot-line">
+╔══════════════════════════════════════════════════════════╗
+║  DANTALINK DATA COLLECTOR · TERMINAL                  ║
+║  SL CORPORATION / SEOULINK · CONFIDENTIAL                ║
+║  Build: 0.1.0-alpha · Operator: 진영                      ║
+╚══════════════════════════════════════════════════════════╝
+      </pre>
+    </div>
+  </section>
+
+  <!-- RIGHT: COLLECTED EVENTS -->
+  <aside class="panel">
+    <div class="panel-header">
+      <div class="panel-title">Collected Events</div>
+      <div class="panel-meta" id="event-meta">TOTAL · 0</div>
+    </div>
+    <div class="panel-body">
+      
+      <div class="stats-bar">
+        <div class="stat-cell">
+          <div class="stat-label">Total Events</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">Active Sources</div>
+          <div class="stat-value cyan" id="stat-sources">3</div>
+        </div>
+      </div>
+      
+      <div class="event-list" id="event-list">
+        <div class="empty-state" id="empty-state">
+          AWAITING SCAN INITIATION
+        </div>
+      </div>
+      
+    </div>
+  </aside>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div>
+    <span class="diamond"></span>
+    SL CORP · DANTALINK · DATA COLLECTOR
+  </div>
+  <div class="footer-progress" id="footer-msg">
+    READY · PRESS [INITIATE SCAN] TO BEGIN
+  </div>
+  <div>
+    <span style="color: var(--cyan);">●</span>
+    SECURE CHANNEL
+  </div>
+</footer>
+
+</div>
+
+<script>
+// ============================================================
+// DantaLink Data Collection Layer - Frontend Logic
+// ============================================================
+
+const STATE = {
+  sources: { GDELT: true, RSS: true, KRX: true, TG: false },
+  keywords: ['에볼라', 'WHO', 'AI', '샘 알트먼'],
+  timespan: '24h',
+  running: false,
+  events: [],
+  logCount: 0,
+};
+
+// ============================================================
+// Mock Data Pool - 실제 API 연결 전 시뮬레이션용
+// ============================================================
+const MOCK_EVENTS = {
+  GDELT: [
+    { title: "WHO declares PHEIC over Bundibugyo Ebola outbreak in DRC/Uganda", cat: "HEALTH", kw: ["WHO", "에볼라", "PHEIC", "분디부교"], src: "Reuters" },
+    { title: "Sam Altman to visit South Korea for AI summit talks", cat: "PERSON", kw: ["샘 알트먼", "OpenAI", "방한", "AI"], src: "Bloomberg" },
+    { title: "Trump administration weighs new tariffs on semiconductors", cat: "GEOPOLITICAL", kw: ["관세", "반도체", "Trump"], src: "WSJ" },
+    { title: "NVIDIA announces next-gen HBM4 partnership with SK hynix", cat: "TECH", kw: ["NVIDIA", "HBM", "반도체"], src: "Reuters" },
+    { title: "US-Iran tensions escalate; Hormuz Strait shipping disrupted", cat: "GEOPOLITICAL", kw: ["이란", "호르무즈", "전쟁"], src: "AFP" },
+    { title: "Anthropic launches legal plugin for Claude Cowork", cat: "TECH", kw: ["Anthropic", "Claude", "AI"], src: "TechCrunch" },
+  ],
+  RSS: [
+    { title: "美 이란 공격 보류…협상 안 되면 즉각 개시", cat: "GEOPOLITICAL", kw: ["이란", "공격", "전쟁"], src: "연합뉴스" },
+    { title: "분디부조 에볼라 백신 임상시험 WHO 검토 착수", cat: "HEALTH", kw: ["WHO", "에볼라", "백신", "분디부교"], src: "헤럴드경제" },
+    { title: "원·달러 환율 장중 1500원 돌파…한 달여 만에 최고", cat: "REGULATORY", kw: ["환율", "달러"], src: "디지털타임스" },
+    { title: "온디바이스 AI 수요 폭증…저전력 메모리 시장 초호황", cat: "TECH", kw: ["AI", "메모리", "온디바이스"], src: "이투데이" },
+    { title: "삼성전자, HBM4 양산 시점 앞당겨…NVIDIA 공급 확대", cat: "TECH", kw: ["삼성", "HBM", "NVIDIA"], src: "한경" },
+  ],
+  KRX: [
+    { title: "[공시] 아이진, 수막구균 4가 백신 임상 3상 신청", cat: "HEALTH", kw: ["아이진", "백신", "임상"], src: "DART" },
+    { title: "[공시] 제주반도체, 2026 1Q 매출 273% 증가 잠정공시", cat: "TECH", kw: ["제주반도체", "메모리", "실적"], src: "DART" },
+    { title: "[공시] SK바이오사이언스, MSD와 에볼라 백신 위탁생산 계약", cat: "HEALTH", kw: ["SK바이오", "에볼라", "위탁생산"], src: "DART" },
+    { title: "[공시] 진원생명과학, mRNA 백신 플랫폼 미국 특허 등록", cat: "HEALTH", kw: ["진원생명", "mRNA", "백신"], src: "DART" },
+  ],
+  TG: [
+    { title: "[속보] 샘표 시간외 상한가 돌입 - 샘 알트먼 방한 모멘텀", cat: "PERSON", kw: ["샘표", "샘 알트먼"], src: "속보채널" },
+    { title: "[루머] 아이진 분디부교 백신 임상 후보 검토 중 보도", cat: "HEALTH", kw: ["아이진", "분디부교", "백신"], src: "속보채널" },
+  ],
+};
+
+// ============================================================
+// Time / Logging
+// ============================================================
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function tickClock() {
+  const now = new Date();
+  const utc = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())} UTC`;
+  document.getElementById('clock').textContent = utc;
+}
+
+function logLine(level, message) {
+  const now = new Date();
+  const t = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const console_el = document.getElementById('console');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  line.innerHTML = `
+    <div class="log-time">${t}</div>
+    <div class="log-level ${level}">[${level}]</div>
+    <div class="log-msg">${message}</div>
+  `;
+  console_el.appendChild(line);
+  console_el.scrollTop = console_el.scrollHeight;
+  STATE.logCount++;
+  document.getElementById('console-meta').textContent = `LINES · ${STATE.logCount}`;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ============================================================
+// Source Toggle
+// ============================================================
+document.querySelectorAll('.source-toggle').forEach(el => {
+  el.addEventListener('click', () => {
+    if (STATE.running) return;
+    const src = el.dataset.source;
+    STATE.sources[src] = !STATE.sources[src];
+    el.classList.toggle('active');
+    updateActiveSourcesCount();
+    logLine('sys', `Source <span class="src">${src}</span> ${STATE.sources[src] ? 'ENABLED' : 'DISABLED'}`);
+  });
+});
+
+function updateActiveSourcesCount() {
+  const count = Object.values(STATE.sources).filter(Boolean).length;
+  document.getElementById('stat-sources').textContent = count;
+}
+
+// ============================================================
+// Keyword Management
+// ============================================================
+function renderKeywords() {
+  const wrap = document.getElementById('kw-tags');
+  wrap.innerHTML = '';
+  STATE.keywords.forEach((kw, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.innerHTML = `${kw} <span class="tag-remove" data-i="${i}">✕</span>`;
+    wrap.appendChild(tag);
+  });
+  wrap.querySelectorAll('.tag-remove').forEach(x => {
+    x.addEventListener('click', () => {
+      const i = +x.dataset.i;
+      const removed = STATE.keywords[i];
+      STATE.keywords.splice(i, 1);
+      renderKeywords();
+      logLine('info', `Keyword removed: <span class="hl">${removed}</span>`);
+    });
+  });
+}
+
+document.getElementById('kw-add').addEventListener('click', addKeyword);
+document.getElementById('kw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addKeyword();
+});
+
+function addKeyword() {
+  const input = document.getElementById('kw-input');
+  const val = input.value.trim();
+  if (!val) return;
+  if (STATE.keywords.includes(val)) {
+    logLine('warn', `Keyword already exists: <span class="hl">${val}</span>`);
+    return;
+  }
+  STATE.keywords.push(val);
+  input.value = '';
+  renderKeywords();
+  logLine('info', `Keyword added: <span class="hl">${val}</span>`);
+}
+
+// ============================================================
+// Timespan
+// ============================================================
+document.querySelectorAll('.timespan-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (STATE.running) return;
+    document.querySelectorAll('.timespan-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    STATE.timespan = btn.dataset.span;
+    logLine('sys', `Timespan set to <span class="hl">${STATE.timespan}</span>`);
+  });
+});
+
+// ============================================================
+// Event Card Rendering
+// ============================================================
+function renderEvent(event) {
+  const list = document.getElementById('event-list');
+  const empty = document.getElementById('empty-state');
+  if (empty) empty.remove();
+  
+  const card = document.createElement('div');
+  card.className = `event-card new ${event.category}`;
+  card.innerHTML = `
+    <div class="event-head">
+      <div class="event-cat ${event.category}">${event.category}</div>
+      <div class="event-src">${event.source}</div>
+    </div>
+    <div class="event-title">${event.title}</div>
+    <div class="event-meta">
+      <span>${event.originalSource}</span>
+      <span>${event.time}</span>
+    </div>
+    <div class="event-keywords">
+      ${event.keywords.map(k => `<span class="event-kw">${k}</span>`).join('')}
+    </div>
+  `;
+  list.insertBefore(card, list.firstChild);
+  
+  STATE.events.unshift(event);
+  document.getElementById('stat-total').textContent = STATE.events.length;
+  document.getElementById('event-meta').textContent = `TOTAL · ${STATE.events.length}`;
+}
+
+// ============================================================
+// Mock Collection Logic
+// ============================================================
+function generateEventId() {
+  return Math.random().toString(36).substring(2, 10);
+}
+
+async function collectFromSource(source) {
+  const sourceName = { GDELT: 'GDELT 2.0', RSS: 'RSS Feeds', KRX: 'KRX/DART', TG: 'Telegram' }[source];
+  
+  logLine('info', `Connecting to <span class="src">${sourceName}</span>...`);
+  await sleep(400 + Math.random() * 600);
+  logLine('ok', `<span class="src">${sourceName}</span> connection established`);
+  await sleep(200);
+  
+  logLine('info', `Querying with <span class="num">${STATE.keywords.length}</span> keywords, timespan=<span class="hl">${STATE.timespan}</span>`);
+  await sleep(500 + Math.random() * 700);
+  
+  // 키워드 기반 필터링 시뮬레이션
+  const pool = MOCK_EVENTS[source] || [];
+  const matched = pool.filter(e => {
+    if (STATE.keywords.length === 0) return true;
+    return STATE.keywords.some(kw => 
+      e.kw.some(ek => ek.includes(kw) || kw.includes(ek)) ||
+      e.title.toLowerCase().includes(kw.toLowerCase())
+    );
+  });
+  
+  logLine('ok', `<span class="src">${sourceName}</span> returned <span class="num">${matched.length}</span> records`);
+  
+  // 카테고리 분류 시뮬레이션
+  for (let i = 0; i < matched.length; i++) {
+    const raw = matched[i];
+    await sleep(300 + Math.random() * 400);
+    
+    const evt = {
+      id: generateEventId(),
+      source: source,
+      originalSource: raw.src,
+      title: raw.title,
+      category: raw.cat,
+      keywords: raw.kw,
+      time: new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }),
+    };
+    
+    logLine('info', `[${source}] Classifying: <span class="hl">${raw.title.substring(0, 50)}...</span>`);
+    await sleep(200);
+    logLine('ok', `Category=<span class="hl">${raw.cat}</span>, keywords=<span class="num">${raw.kw.length}</span>`);
+    
+    renderEvent(evt);
+  }
+  
+  return matched.length;
+}
+
+// ============================================================
+// Execute Scan
+// ============================================================
+document.getElementById('btn-exec').addEventListener('click', async () => {
+  if (STATE.running) {
+    STATE.running = false;
+    logLine('warn', 'Scan ABORTED by operator');
+    resetScanButton();
+    return;
+  }
+  
+  const activeSources = Object.entries(STATE.sources).filter(([_, v]) => v).map(([k]) => k);
+  if (activeSources.length === 0) {
+    logLine('err', 'No active sources. Enable at least one source.');
+    return;
+  }
+  
+  STATE.running = true;
+  const btn = document.getElementById('btn-exec');
+  btn.textContent = '■ ABORT SCAN';
+  btn.classList.add('running');
+  
+  document.getElementById('net-status').className = 'status-dot';
+  document.getElementById('net-state').textContent = 'ACTIVE';
+  document.getElementById('op-status').className = 'status-dot warn';
+  document.getElementById('op-state').textContent = 'SCANNING';
+  
+  logLine('sys', `═══════════════════════════════════════════════════`);
+  logLine('sys', `SCAN INITIATED · ${activeSources.length} sources · ${STATE.keywords.length} keywords`);
+  logLine('sys', `═══════════════════════════════════════════════════`);
+  
+  document.getElementById('footer-msg').textContent = 'SCAN IN PROGRESS · COLLECTING...';
+  
+  let totalCollected = 0;
+  for (const source of activeSources) {
+    if (!STATE.running) break;
+    await sleep(300);
+    const n = await collectFromSource(source);
+    totalCollected += n;
+    await sleep(400);
+  }
+  
+  if (STATE.running) {
+    logLine('sys', `═══════════════════════════════════════════════════`);
+    logLine('ok', `SCAN COMPLETE · <span class="num">${totalCollected}</span> events collected`);
+    logLine('sys', `Ready for Stage 02: Match Generation`);
+    logLine('sys', `═══════════════════════════════════════════════════`);
+  }
+  
+  STATE.running = false;
+  resetScanButton();
+});
+
+function resetScanButton() {
+  const btn = document.getElementById('btn-exec');
+  btn.textContent = '▶ INITIATE SCAN';
+  btn.classList.remove('running');
+  document.getElementById('net-status').className = 'status-dot idle';
+  document.getElementById('net-state').textContent = 'IDLE';
+  document.getElementById('op-status').className = 'status-dot idle';
+  document.getElementById('op-state').textContent = 'STANDBY';
+  document.getElementById('footer-msg').textContent = 'STANDBY · READY FOR NEXT SCAN';
+}
+
+// ============================================================
+// Boot Sequence
+// ============================================================
+async function boot() {
+  setInterval(tickClock, 1000);
+  tickClock();
+  renderKeywords();
+  updateActiveSourcesCount();
+  
+  await sleep(300);
+  logLine('sys', 'DantaLink Data Collector v0.1.0 initializing...');
+  await sleep(200);
+  logLine('ok', 'Configuration loaded');
+  await sleep(150);
+  logLine('ok', 'Source adapters: GDELT, RSS, KRX, Telegram registered');
+  await sleep(150);
+  logLine('ok', 'Heuristic classifier loaded (6 categories)');
+  await sleep(150);
+  logLine('ok', 'Keyword dictionary: <span class="num">' + STATE.keywords.length + '</span> entries');
+  await sleep(150);
+  logLine('sys', 'SYSTEM READY · Awaiting operator command');
+}
+
+boot();
+</script>
+
+</body>
+</html>

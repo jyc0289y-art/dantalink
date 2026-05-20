@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DantaLink :: Stock Match Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Terran Console Palette (HOBIS 디자인 시스템 계승) */
+    --bg-void: #050810;
+    --bg-deep: #0a0f17;
+    --bg-panel: #131820;
+    --bg-elevated: #1a212c;
+    --bg-input: #0e131b;
+    --border-dim: #1f2733;
+    --border: #2a3441;
+    --border-bright: #3d4a5c;
+    --ink: #c8d4e0;
+    --ink-dim: #7a8a9c;
+    --ink-faint: #4a5668;
+    --terran: #ffb627;
+    --terran-dim: #b87f1a;
+    --terran-glow: rgba(255, 182, 39, 0.4);
+    --cyan: #4ecdc4;
+    --cyan-bright: #00ffe5;
+    --cyan-glow: rgba(78, 205, 196, 0.3);
+    --red: #ff3a3a;
+    --red-glow: rgba(255, 58, 58, 0.4);
+    --green: #4ade80;
+    --green-glow: rgba(74, 222, 128, 0.4);
+    --orange: #ff8c42;
+    --violet: #a78bfa;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Orbitron', 'JetBrains Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg-void);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg, transparent 0, transparent 2px,
+      rgba(255, 182, 39, 0.015) 2px,
+      rgba(255, 182, 39, 0.015) 3px
+    );
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.45) 100%);
+  }
+
+  .app {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 52px 1fr 28px;
+    background: var(--bg-deep);
+  }
+
+  /* ============ HEADER ============ */
+  .header {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    padding: 0 18px;
+    gap: 18px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0;
+    width: 35%; height: 1px;
+    background: linear-gradient(90deg, var(--terran) 0%, transparent 100%);
+  }
+  .logo {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 0.15em;
+    color: var(--terran);
+    text-shadow: 0 0 12px var(--terran-glow);
+  }
+  .logo small {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--ink-dim);
+    margin-left: 8px;
+  }
+  .scenario-select {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+    padding: 3px;
+    border-radius: 1px;
+  }
+  .scenario-btn {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--ink-dim);
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .scenario-btn:hover { color: var(--ink); }
+  .scenario-btn.active {
+    background: var(--terran);
+    color: #000;
+    box-shadow: 0 0 12px var(--terran-glow);
+  }
+
+  .help-btn {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    background: var(--bg-input);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .help-btn:hover {
+    background: var(--cyan);
+    color: #000;
+    box-shadow: 0 0 16px var(--cyan-glow);
+  }
+  .clock {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan-glow);
+  }
+
+  /* ============ BODY GRID ============ */
+  .body {
+    display: grid;
+    grid-template-columns: 280px 1fr 380px;
+    overflow: hidden;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    background: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--terran);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+    padding: 10px;
+    border-radius: 1px;
+    cursor: help;
+    transition: border-color 0.15s;
+  }
+  .stat-card:hover { border-color: var(--cyan); }
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .stat-value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--cyan);
+    margin-top: 4px;
+  }
+  .stat-value.terran { color: var(--terran); }
+
+  .category-bar {
+    display: flex;
+    gap: 2px;
+    height: 14px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+  }
+  .cat-segment {
+    height: 100%;
+    transition: opacity 0.2s;
+    cursor: help;
+  }
+  .cat-segment:hover { opacity: 0.8; }
+  .cat-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 10px;
+  }
+  .cat-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: help;
+  }
+  .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .control-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    cursor: help;
+  }
+  .control-input {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 1px;
+  }
+  .control-input:focus {
+    outline: none;
+    border-color: var(--terran);
+    box-shadow: 0 0 0 2px var(--terran-glow);
+  }
+  .sort-toggle {
+    display: flex;
+    gap: 0;
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+  }
+  .sort-toggle button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--ink-dim);
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .sort-toggle button.active {
+    background: var(--cyan);
+    color: #000;
+  }
+  .sort-toggle button[data-help] { cursor: help; }
+
+  .file-zone {
+    border: 1px dashed var(--border-bright);
+    background: var(--bg-input);
+    padding: 16px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .file-zone:hover {
+    border-color: var(--terran);
+    color: var(--ink);
+  }
+  .file-zone.dragover {
+    border-color: var(--green);
+    color: var(--green);
+    box-shadow: 0 0 0 2px var(--green-glow);
+  }
+
+  /* 도움말 아이콘 (?) */
+  .help-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 13px;
+    height: 13px;
+    border: 1px solid var(--ink-faint);
+    border-radius: 50%;
+    color: var(--ink-faint);
+    font-size: 9px;
+    font-weight: 700;
+    cursor: help;
+    margin-left: 4px;
+    transition: all 0.15s;
+  }
+  .help-icon:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan-glow);
+  }
+
+  /* ============ MAIN ============ */
+  .main {
+    background: var(--bg-deep);
+    overflow-y: auto;
+    padding: 16px 18px;
+  }
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .main-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: var(--ink);
+    text-transform: uppercase;
+  }
+  .main-title small {
+    color: var(--ink-dim);
+    margin-left: 8px;
+    font-size: 11px;
+  }
+  .pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-left: 8px;
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+  }
+  .stock-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-dim);
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .stock-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px; height: 100%;
+    background: var(--terran);
+    transform: translateX(-100%);
+    transition: transform 0.15s;
+  }
+  .stock-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--border-bright);
+  }
+  .stock-card:hover::before { transform: translateX(0); }
+  .stock-card.selected {
+    background: var(--bg-elevated);
+    border-color: var(--terran);
+    box-shadow: 0 0 0 1px var(--terran), 0 0 16px var(--terran-glow);
+  }
+  .stock-card.selected::before { transform: translateX(0); }
+  .stock-rank {
+    position: absolute;
+    top: 8px; right: 10px;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--ink-faint);
+    opacity: 0.5;
+  }
+  .stock-card:nth-child(1) .stock-rank { color: var(--terran); opacity: 1; }
+  .stock-card:nth-child(2) .stock-rank { color: var(--cyan); opacity: 0.9; }
+  .stock-card:nth-child(3) .stock-rank { color: var(--orange); opacity: 0.9; }
+  .stock-name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 2px;
+    letter-spacing: 0.02em;
+  }
+  .stock-code {
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    cursor: help;
+  }
+  .stock-market {
+    display: inline-block;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    color: var(--ink-dim);
+    margin-right: 6px;
+    cursor: help;
+  }
+  .stock-marcap {
+    font-size: 10px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+    cursor: help;
+  }
+  .stock-scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .score-cell {
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+    padding: 5px 4px;
+    text-align: center;
+    cursor: help;
+  }
+  .score-cell:hover { border-color: var(--cyan); }
+  .score-cell .label {
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .score-cell .value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--terran);
+  }
+  .score-cell.dim .value { color: var(--ink-dim); font-size: 11px; }
+  .stock-layers {
+    display: flex;
+    gap: 4px;
+  }
+  .layer-badge {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid;
+    cursor: help;
+  }
+  .layer-phonological {
+    color: var(--cyan);
+    border-color: var(--cyan);
+    background: rgba(78, 205, 196, 0.08);
+  }
+  .layer-semantic {
+    color: var(--terran);
+    border-color: var(--terran);
+    background: rgba(255, 182, 39, 0.08);
+  }
+
+  /* ============ DETAIL ============ */
+  .detail {
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .detail-header {
+    border-bottom: 1px solid var(--border-dim);
+    padding-bottom: 10px;
+  }
+  .detail-stock-name {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--terran);
+    margin-bottom: 4px;
+  }
+  .detail-stock-meta {
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .detail-stock-code { color: var(--cyan); }
+  .detail-empty {
+    text-align: center;
+    color: var(--ink-faint);
+    padding: 32px 16px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+  .match-card {
+    background: var(--bg-input);
+    border-left: 2px solid var(--cyan);
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+  .match-card.layer-semantic { border-left-color: var(--terran); }
+  .match-card.layer-phonological { border-left-color: var(--cyan); }
+  .match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .match-meta {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    cursor: help;
+  }
+  .match-score {
+    font-family: var(--display);
+    font-weight: 700;
+    color: var(--terran);
+    font-size: 13px;
+    cursor: help;
+  }
+  .match-keyword {
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .match-keyword strong {
+    color: var(--green);
+    font-weight: 700;
+    cursor: help;
+  }
+  .match-event {
+    color: var(--ink-dim);
+    font-size: 10px;
+    line-height: 1.4;
+  }
+  .match-event-category {
+    display: inline-block;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 1px 5px;
+    margin-right: 4px;
+    border: 1px solid currentColor;
+    cursor: help;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .footer-left, .footer-right {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .footer-status { color: var(--green); }
+
+  /* ============ TOOLTIP ============ */
+  .tooltip {
+    position: fixed;
+    background: var(--bg-elevated);
+    border: 1px solid var(--terran);
+    color: var(--ink);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.55;
+    max-width: 360px;
+    z-index: 100000;
+    box-shadow: 0 0 24px rgba(0,0,0,0.7), 0 0 16px var(--terran-glow);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.12s, transform 0.12s;
+    border-radius: 1px;
+  }
+  .tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .tooltip-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--terran);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .tooltip-body {
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+  .tooltip-body code {
+    background: var(--bg-void);
+    padding: 0 4px;
+    color: var(--cyan);
+    font-size: 10px;
+    border-radius: 1px;
+  }
+
+  /* ============ MODAL (GLOSSARY) ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 50000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--terran);
+    box-shadow: 0 0 48px var(--terran-glow);
+    width: min(960px, 92vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1px;
+  }
+  .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-elevated);
+  }
+  .modal-title {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    color: var(--terran);
+    text-transform: uppercase;
+  }
+  .modal-close {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modal-close:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .modal-section {
+    margin-bottom: 28px;
+  }
+  .modal-section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .glossary-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border-dim);
+    padding: 12px 14px;
+  }
+  .glossary-card-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--terran);
+    margin-bottom: 6px;
+  }
+  .glossary-card-body {
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+  .glossary-card-body code {
+    background: var(--bg-void);
+    padding: 0 4px;
+    color: var(--cyan);
+    font-size: 10px;
+  }
+
+  .flow-diagram {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    padding: 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+  .flow-diagram b { color: var(--terran); font-weight: 700; }
+  .flow-diagram em { color: var(--cyan); font-style: normal; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
+
+  /* Category colors */
+  .cat-health { background: var(--red); }
+  .cat-tech { background: var(--cyan); }
+  .cat-geopolitical { background: var(--orange); }
+  .cat-person { background: var(--terran); }
+  .cat-disaster { background: var(--red); }
+  .cat-regulatory { background: var(--violet); }
+  .cat-unknown { background: var(--ink-faint); }
+  .text-cat-health { color: var(--red); }
+  .text-cat-tech { color: var(--cyan); }
+  .text-cat-geopolitical { color: var(--orange); }
+  .text-cat-person { color: var(--terran); }
+  .text-cat-disaster { color: var(--red); }
+  .text-cat-regulatory { color: var(--violet); }
+  .text-cat-unknown { color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo" data-help="logo">
+      DANTALINK <small>:: STOCK MATCH CONSOLE / STAGE 02</small>
+    </div>
+    <div class="scenario-select">
+      <button class="scenario-btn active" data-source="matches_demo.json" data-help="scenario_demo">DEMO</button>
+      <button class="scenario-btn" data-source="matches_live.json" data-help="scenario_live">LIVE RSS</button>
+      <button class="scenario-btn" data-source="__upload__" data-help="scenario_upload">UPLOAD…</button>
+    </div>
+    <button class="help-btn" id="help-btn">❔ HELP / 사전</button>
+    <div class="clock" id="clock" data-help="clock">--:--:-- UTC</div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="section-title">
+          ▸ Data Source
+          <span class="help-icon" data-help="data_source_section">?</span>
+        </div>
+        <div id="data-source-info" style="font-size:10px; color:var(--ink-dim); padding:8px; background:var(--bg-input); border:1px solid var(--border-dim);">
+          loading…
+        </div>
+        <input type="file" id="file-input" accept=".json" style="display:none;">
+        <div class="file-zone" id="file-zone" style="margin-top:10px;" data-help="file_zone">
+          DROP JSON HERE<br>
+          <small style="color:var(--ink-faint);">or click to select</small>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          ▸ Statistics
+          <span class="help-icon" data-help="stats_section">?</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" data-help="stat_events">
+            <div class="stat-label">Events</div>
+            <div class="stat-value" id="stat-events">0</div>
+          </div>
+          <div class="stat-card" data-help="stat_stocks">
+            <div class="stat-label">Stocks</div>
+            <div class="stat-value terran" id="stat-stocks">0</div>
+          </div>
+          <div class="stat-card" data-help="stat_candidates">
+            <div class="stat-label">Candidates</div>
+            <div class="stat-value" id="stat-candidates">0</div>
+          </div>
+          <div class="stat-card" data-help="stat_db">
+            <div class="stat-label">KRX DB</div>
+            <div class="stat-value" id="stat-db">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          ▸ Category Mix
+          <span class="help-icon" data-help="category_section">?</span>
+        </div>
+        <div class="category-bar" id="category-bar"></div>
+        <div class="cat-legend" id="cat-legend"></div>
+      </div>
+
+      <div>
+        <div class="section-title">
+          ▸ Filters
+          <span class="help-icon" data-help="filter_section">?</span>
+        </div>
+        <div class="control-group">
+          <label class="control-label" data-help="filter_top">Top N</label>
+          <input type="number" class="control-input" id="filter-top" value="30" min="5" max="100">
+        </div>
+        <div class="control-group">
+          <label class="control-label" data-help="filter_min_marcap">Min Marcap (억)</label>
+          <input type="number" class="control-input" id="filter-min-marcap" value="0">
+        </div>
+        <div class="control-group">
+          <label class="control-label" data-help="filter_max_marcap">Max Marcap (억, 0=∞)</label>
+          <input type="number" class="control-input" id="filter-max-marcap" value="0">
+        </div>
+        <div class="control-group">
+          <label class="control-label" data-help="filter_sort">Sort</label>
+          <div class="sort-toggle">
+            <button class="active" data-sort="max" data-help="sort_max">MAX</button>
+            <button data-sort="total" data-help="sort_total">TOTAL</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" data-help="filter_layer">Layer Filter</label>
+          <div class="sort-toggle">
+            <button class="active" data-layer="all" data-help="layer_all">ALL</button>
+            <button data-layer="phonological" data-help="layer_phonological">音韻</button>
+            <button data-layer="semantic" data-help="layer_semantic">意味</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="main-header">
+        <div class="main-title" data-help="stock_candidates">
+          STOCK CANDIDATES <small id="stock-count-display">— 0 visible</small>
+          <span class="pulse" data-help="system_live"></span>
+        </div>
+        <div style="font-size:10px; color:var(--ink-dim); letter-spacing:0.15em; text-transform:uppercase;">
+          ▤ click card → details · hover any item → tooltip
+        </div>
+      </div>
+      <div class="stock-grid" id="stock-grid">
+        <div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--ink-faint); font-size:12px;">
+          NO DATA LOADED
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="detail" id="detail">
+      <div class="detail-empty">
+        ◇ SELECT A STOCK CARD<br>
+        TO VIEW MATCH EVIDENCE
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-status">● ONLINE</span>
+      <span>v0.2 / STAGE 02 / TERRAN CONSOLE</span>
+    </div>
+    <div class="footer-right">
+      <span id="footer-data-info">no data</span>
+      <span data-help="hobis_ds">HOBIS DS</span>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLTIP CONTAINER -->
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-title" id="tooltip-title"></div>
+  <div class="tooltip-body" id="tooltip-body"></div>
+</div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">📖 DantaLink 사전 / 데이터 흐름</div>
+      <button class="modal-close" id="modal-close">✕ CLOSE</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- JS로 채움 -->
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ============ GLOSSARY (모든 툴팁 & 모달 콘텐츠) ============
+  const GLOSSARY = {
+    // --- 일반 ---
+    logo: {
+      title: 'DantaLink Stage 02',
+      body: 'DantaLink (단타 + Link) 매칭 콘솔.\nStage 02 = 매칭 후보 생성.\n수집된 트리거 이벤트를 KRX 종목과 연결합니다.'
+    },
+    clock: {
+      title: 'UTC 시계',
+      body: '협정세계시 (한국 시간 −9). 트리거 이벤트의 published_at도 UTC로 저장됩니다.'
+    },
+    hobis_ds: {
+      title: 'HOBIS Design System',
+      body: 'SeouLink 산하 HOBIS(방사선 방호) 프로젝트에서 도출된 디자인 언어.\n스타크래프트 테란 컨솔 미학 — JetBrains Mono + Orbitron, 옐로우 #ffb627 시그니처.'
+    },
+
+    // --- 시나리오 ---
+    scenario_demo: {
+      title: 'DEMO 시나리오',
+      body: '방법론 §2.4 사례 시연용 가상 트리거 3건:\n• 분디부교 에볼라 PHEIC → 백신주\n• 샘 알트먼 방한 → 음운 매칭\n• 호르무즈 충돌 → 방산주\n\n파일: events_demo.json → matches_demo.json'
+    },
+    scenario_live: {
+      title: 'LIVE RSS 시나리오',
+      body: '실제 RSS 라이브 수집 결과 20건 기반 매칭.\n매일경제·연합뉴스·전자신문·ZDNet·WHO 등 8개 피드에서 24시간 분 수집.\n\n파일: events_rss.json → matches_live.json'
+    },
+    scenario_upload: {
+      title: 'UPLOAD',
+      body: '직접 matches_*.json 파일을 선택하거나 드래그하여 로드.\n맥북 세션 등 다른 환경에서 생성한 매칭 결과도 시각화 가능.'
+    },
+
+    // --- Data Source ---
+    data_source_section: {
+      title: 'Data Source — JSON 파일 역할',
+      body: '⓵ events_*.json (입력)\n  Stage 01 수집기가 만든 트리거 이벤트 리스트.\n  각 이벤트: 헤드라인, 카테고리, 키워드, URL, 시각.\n\n⓶ matches_*.json (출력)\n  events_*.json을 KRX 종목과 매칭한 결과.\n  각 종목별: 점수, 매칭 근거, 레이어.\n  현재 GUI는 이 파일을 시각화.\n\n⓷ data/krx_stocks.csv\n  KRX 상장 종목 2,878개 마스터 (코드/이름/시장/시총). 매칭의 기준 풀.'
+    },
+    file_zone: {
+      title: '파일 업로드',
+      body: '클릭하거나 JSON 파일을 드래그하여 로드.\n포맷: dantalink match 명령이 생성한 matches_*.json'
+    },
+
+    // --- Statistics ---
+    stats_section: {
+      title: 'Statistics — 4개 핵심 지표',
+      body: 'Events: 매칭 입력으로 사용된 트리거 이벤트 수\nStocks: 매칭에 잡힌 고유 종목 수 (중복 제거)\nCandidates: 모든 매칭 발생 횟수 (한 종목이 여러 이벤트와 매칭되면 각각 1)\nKRX DB: 매칭 풀로 사용된 KRX 종목 수 (현재 2,878)'
+    },
+    stat_events: {
+      title: 'Events (입력 이벤트 수)',
+      body: 'Stage 01에서 수집된 트리거 이벤트 건수.\nDEMO=3건, LIVE RSS=20건이 기본.\n\n각 이벤트는 헤드라인+카테고리+키워드로 구성되며 매칭의 입력.'
+    },
+    stat_stocks: {
+      title: 'Stocks (매칭된 종목 수)',
+      body: 'Top N 적용 전 전체 고유 종목 수.\n예: DEMO 3건 입력 → 100여 종목이 후보로 떠오름.\n\n시총 필터 변경 시 이 값 변동.'
+    },
+    stat_candidates: {
+      title: 'Candidates (총 매칭 횟수)',
+      body: '한 종목이 여러 이벤트와 매칭되면 각각 1씩 누적.\n예: 사피엔반도체가 15개 이벤트의 "반도체" 키워드와 매칭되면 15.\n\nLIVE RSS 836건 = AI 키워드가 14개 이벤트에 등장 → 반도체 종목 다수에 누적.'
+    },
+    stat_db: {
+      title: 'KRX DB',
+      body: '매칭 풀로 사용된 KRX 상장 종목 수.\n현재 2,878개 (KOSPI 948 + KOSDAQ 1770 + KOSDAQ GLOBAL 52 + KONEX 108).\n\nFinanceDataReader로 다운로드 → data/krx_stocks.csv 캐시.'
+    },
+
+    // --- Category ---
+    category_section: {
+      title: 'Category Mix — 카테고리 분포',
+      body: '입력 이벤트들이 어느 카테고리에 분류됐는지 시각화.\n각 색상 = 카테고리 (Hover로 카테고리명/건수 확인).\n\n7개 카테고리: HEALTH, TECH, GEOPOLITICAL, PERSON, DISASTER, REGULATORY, UNKNOWN'
+    },
+    cat_health: {
+      title: 'HEALTH (보건)',
+      body: '키워드: WHO, PHEIC, 에볼라, 바이러스, 백신, 분디부교, 임상시험\n\n주요 매칭 대상: 백신/제약/바이오/메디 종목 (차백신연구소, 중앙백신, 삼성바이오로직스 등)'
+    },
+    cat_tech: {
+      title: 'TECH (기술)',
+      body: '키워드: OpenAI, GPT, Claude, AI, 인공지능, 반도체, HBM, 자율주행\n\n주요 매칭: 반도체/소프트/테크/시스템 종목 (다수)'
+    },
+    cat_geopolitical: {
+      title: 'GEOPOLITICAL (지정학)',
+      body: '키워드: 전쟁, 미사일, 제재, 이란, 호르무즈, 우크라이나\n\n주요 매칭: 방산/항공우주/에어로/조선 종목 (한국항공우주, 한화에어로, 해성에어로보틱스 등)'
+    },
+    cat_person: {
+      title: 'PERSON (인물)',
+      body: '키워드: 방한, 내한, 회담, 인터뷰, CEO, 대통령\n\n음운 매칭(Layer A)의 핵심 트리거.\n예: 샘 알트먼 방한 → 샘표 매칭'
+    },
+    cat_disaster: {
+      title: 'DISASTER (재난)',
+      body: '키워드: 지진, 쓰나미, 화재, 폭발, 추락, 침몰, 태풍\n\n주요 매칭: 건설/보험/복구 관련 종목'
+    },
+    cat_regulatory: {
+      title: 'REGULATORY (규제/금융정책)',
+      body: '키워드: 금리, FOMC, 한은, 규제, 법안, 환율, CPI\n\n주요 매칭: 증권/금융/은행/보험/캐피탈 종목'
+    },
+    cat_unknown: {
+      title: 'UNKNOWN',
+      body: '분류기가 어떤 카테고리 키워드도 발견하지 못한 이벤트.\n향후 LLM 분류기로 보강 예정.'
+    },
+
+    // --- Filters ---
+    filter_section: {
+      title: 'Filters — 종목 후보 좁히기',
+      body: '시총 범위, 정렬 기준, 매칭 레이어를 조절하여 단타에 적합한 후보만 추출.\n\n방법론 §4 Stage 3: "시총 5,000억 이하 우선" — Max Marcap 5000 설정 권장.'
+    },
+    filter_top: {
+      title: 'Top N',
+      body: '상위 몇 개 종목을 화면에 표시할지.\n기본 30. 더 많이 보려면 50~100 입력.'
+    },
+    filter_min_marcap: {
+      title: 'Min Marcap (최소 시가총액)',
+      body: '단위: 억원.\n너무 작은 종목(거래 부진·관리종목 위험)을 배제.\n\n0 = 제한 없음. 일반적으로 100~500 권장.'
+    },
+    filter_max_marcap: {
+      title: 'Max Marcap (최대 시가총액)',
+      body: '단위: 억원. 0 = 무제한.\n\n단타는 5,000억 이하 중소형주가 적합 (방법론 §4 Stage 3).\n대형주(삼성전자·LG에너지솔루션 등) 함께 보고 싶으면 0 입력.'
+    },
+    filter_sort: {
+      title: 'Sort — 정렬 기준',
+      body: 'MAX: 단일 매칭 최고 점수 우선 (강한 신호 1건이 약한 신호 N건보다 우선)\nTOTAL: 누적 점수 우선 (다중 매칭 종목 우선)\n\n단타 시그널로는 MAX 권장.'
+    },
+    sort_max: {
+      title: 'Sort MAX',
+      body: '한 종목이 받은 모든 매칭 중 가장 높은 단일 점수 기준 정렬.\n\n예시: 비상교육 max=0.55 (EXACT 1건) > 사피엔반도체 max=0.50 (semantic 15건, total=6.7)\n\n=> 단일 강한 신호가 우선.'
+    },
+    sort_total: {
+      title: 'Sort TOTAL',
+      body: '모든 매칭 점수의 합 기준 정렬.\n\n예시: 사피엔반도체 total=6.7 > 비상교육 total=0.55\n\n=> 다중 매칭 종목 우선. 카테고리 폭주 시 노이즈 위험.'
+    },
+    filter_layer: {
+      title: 'Layer Filter',
+      body: 'ALL: 모든 매칭 (Layer A 또는 B 어느 쪽이든)\n音韻 (Phonological): 음운 매칭만 — 트리거 토큰 첫 음절 일치\n意味 (Semantic): 의미 매칭만 — 키워드/카테고리 substring 일치'
+    },
+    layer_all: {
+      title: '모든 레이어',
+      body: 'Layer A (음운) + Layer B (의미) 모두 표시.\n실전에서는 ALL을 기본으로.'
+    },
+    layer_phonological: {
+      title: 'Layer A — 음운(Phonological)',
+      body: '트리거 헤드라인의 한국어 토큰 첫 음절이 종목명 첫 음절과 일치하면 매칭.\n\n근거: 방법론 §2.3 음운적 점화, Rashes(2001) 이름 유사성 효과.\n\n예: "아이진 백신주 급등" 트리거 → 아이진(185490) EXACT match (0.55)'
+    },
+    layer_semantic: {
+      title: 'Layer B — 의미(Semantic)',
+      body: '트리거 이벤트의 키워드/카테고리가 종목명에 substring으로 포함되면 매칭.\n\n근거: 방법론 §2.3 카테고리 매핑, 의미적 점화.\n\n예: 키워드 "백신" → 차백신연구소(261780), 중앙백신(072020) 매칭 (0.50)'
+    },
+
+    // --- Main Header ---
+    stock_candidates: {
+      title: 'Stock Candidates',
+      body: '필터 + 정렬 적용 후 상위 종목 후보.\n각 카드는 한 종목을 표시 (순위/이름/코드/시장/시총/점수/매칭수/레이어).\n\n카드 클릭 → 우측 패널에 모든 매칭 근거 표시.'
+    },
+    system_live: {
+      title: '시스템 LIVE 표시',
+      body: '펄스 LED — GUI 자체는 정상 작동 중을 의미.\n실제 라이브 데이터 수집 여부와는 별개 (현재는 정적 JSON 파일).'
+    },
+
+    // --- Stock Card 요소 ---
+    score_max: {
+      title: 'MAX (단일 최고 점수)',
+      body: '이 종목이 받은 모든 매칭 중 단 1건의 최고 점수.\n\n0.30: 음운 first-1 일치 (약함)\n0.40: 음운 first-2 또는 카테고리 테마 (중간)\n0.50: 이벤트 키워드 substring 직접 매칭 (강함)\n0.55: EXACT 매칭 — 트리거에 종목명 직접 언급 (가장 강함)\n\n방법론 §4 Stage 4 신뢰도 p값 체계.'
+    },
+    score_total: {
+      title: 'TOTAL (누적 점수)',
+      body: '모든 매칭 점수의 합.\n매칭 수에 비례하므로 카테고리 다중 매칭 종목이 높음.\n\nMAX과 함께 보면 시그널 강도 + 빈도 균형 파악 가능.'
+    },
+    score_match_count: {
+      title: '매칭 수',
+      body: '이 종목이 트리거 이벤트와 매칭된 횟수.\n한 이벤트당 1~N (Layer A + Layer B 각각 가능).\n\n예: 차백신연구소가 한 이벤트의 phonological(0.40) + semantic(0.50)에 매칭 → 매칭수 2'
+    },
+    stock_code: {
+      title: '종목코드 (6자리)',
+      body: 'KRX 표준 종목 코드.\n클릭 시 (향후) 한국거래소·네이버금융 페이지로 이동 예정.'
+    },
+    stock_market: {
+      title: '시장 (Market)',
+      body: 'KOSPI: 코스피 (대형/중견)\nKOSDAQ: 코스닥 (중소형/벤처)\nKOSDAQ GLOBAL: 글로벌 세그먼트 (선별된 코스닥)\nKONEX: 코넥스 (초기기업)\n\n시장별 거래량·변동성 특성 다름. 단타는 KOSDAQ 중심.'
+    },
+    stock_marcap: {
+      title: '시가총액 (Marcap)',
+      body: '단위: 억원.\n종가 × 발행주식수.\n\n방법론 §4 Stage 3: "5,000억 이하 우선" — 단타 변동성·진입 용이성 고려.'
+    },
+    layer_badge_phon: {
+      title: '音韻 — 음운 매칭',
+      body: 'Layer A. 트리거 토큰의 첫 음절이 이 종목의 첫 음절과 일치.\n\n예: 트리거 "아이진" → 종목 "아이진" EXACT'
+    },
+    layer_badge_sem: {
+      title: '意味 — 의미 매칭',
+      body: 'Layer B. 이벤트 키워드/카테고리가 이 종목명에 substring으로 포함.\n\n예: 키워드 "백신" → 종목 "차백신연구소" 안에 "백신" 포함'
+    },
+
+    // --- Match Evidence ---
+    match_meta: {
+      title: '매칭 레이어',
+      body: '이 매칭이 어느 레이어에서 발생했는지.\n音韻 = Layer A (음운), 意味 = Layer B (의미)'
+    },
+    match_score: {
+      title: '매칭 점수',
+      body: '0.30 ~ 0.55 범위.\n방법론 §4 Stage 4의 신뢰도 p값을 그대로 적용.\n\n실제 단타 진입 시 Kelly 1/4 공식에 입력될 신뢰도.'
+    },
+    match_keyword: {
+      title: '매칭 단서 (matched_on)',
+      body: '실제로 매칭을 트리거한 키워드 또는 음절.\n\nLayer A: 트리거 토큰 (예: "아이진", "샘")\nLayer B: 키워드 또는 테마 (예: "백신", "반도체")'
+    },
+    match_event_category: {
+      title: '이벤트 카테고리 배지',
+      body: '이 매칭을 일으킨 트리거 이벤트가 분류된 카테고리.\n7가지: HEALTH, TECH, GEOPOLITICAL, PERSON, DISASTER, REGULATORY, UNKNOWN.\n\n색상은 카테고리별 고정.'
+    },
+  };
+
+  // ============ STATE ============
+  const STATE = {
+    data: null,
+    selectedStock: null,
+    sort: 'max',
+    layerFilter: 'all',
+    topN: 30,
+    minMarcap: 0,
+    maxMarcap: 0,
+  };
+
+  // ============ EMBEDDED SAMPLE ============
+  const SAMPLE_DEMO = {
+    "generated_at": "2026-05-20T13:23:00",
+    "input_events": "events_demo.json",
+    "event_count": 3,
+    "stock_db_count": 2878,
+    "filter": {"min_marcap_eok": 100, "max_marcap_eok": 5000},
+    "top_stocks": [
+      {"stock_code":"185490","stock_name":"아이진","market":"KOSDAQ","marcap_eok":966,"total_score":0.55,"max_score":0.55,"match_count":1,"layers":["phonological"],"matches":[{"event_title":"WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발","event_category":"health","layer":"phonological","score":0.55,"matched_on":"아이진"}]},
+      {"stock_code":"072020","stock_name":"중앙백신","market":"KOSDAQ","marcap_eok":921,"total_score":0.50,"max_score":0.50,"match_count":1,"layers":["semantic"],"matches":[{"event_title":"WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발","event_category":"health","layer":"semantic","score":0.5,"matched_on":"백신"}]},
+      {"stock_code":"261780","stock_name":"차백신연구소","market":"KOSDAQ","marcap_eok":918,"total_score":0.50,"max_score":0.50,"match_count":1,"layers":["semantic"],"matches":[{"event_title":"WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발","event_category":"health","layer":"semantic","score":0.5,"matched_on":"백신"}]},
+      {"stock_code":"084850","stock_name":"아이티엠반도체","market":"KOSDAQ GLOBAL","marcap_eok":3087,"total_score":0.80,"max_score":0.40,"match_count":2,"layers":["phonological","semantic"],"matches":[{"event_title":"WHO, 분디부교 에볼라 PHEIC 선포...아이진 백신주 급등 출발","event_category":"health","layer":"phonological","score":0.4,"matched_on":"아이진"},{"event_title":"샘 알트먼 OpenAI CEO 방한 AI 정상회담","event_category":"tech","layer":"semantic","score":0.4,"matched_on":"반도체"}]},
+      {"stock_code":"059270","stock_name":"해성에어로보틱스","market":"KOSDAQ","marcap_eok":1124,"total_score":0.70,"max_score":0.40,"match_count":2,"layers":["phonological","semantic"],"matches":[{"event_title":"호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려","event_category":"geopolitical","layer":"phonological","score":0.3,"matched_on":"해협"},{"event_title":"호르무즈 해협 긴장 고조...이란-이스라엘 충돌 우려","event_category":"geopolitical","layer":"semantic","score":0.4,"matched_on":"에어로"}]}
+    ]
+  };
+
+  // ============ UTILS ============
+  function $(sel) { return document.querySelector(sel); }
+  function $$(sel) { return Array.from(document.querySelectorAll(sel)); }
+  function updateClock() {
+    const now = new Date();
+    $('#clock').textContent = now.toISOString().slice(11, 19) + ' UTC';
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function formatNumber(n) { return n.toLocaleString('ko-KR'); }
+
+  // ============ TOOLTIP SYSTEM ============
+  const tooltip = $('#tooltip');
+  const tooltipTitle = $('#tooltip-title');
+  const tooltipBody = $('#tooltip-body');
+
+  function showTooltip(key, x, y) {
+    const entry = GLOSSARY[key];
+    if (!entry) return;
+    tooltipTitle.textContent = entry.title;
+    tooltipBody.innerHTML = entry.body.replace(/`([^`]+)`/g, '<code>$1</code>');
+    tooltip.classList.add('visible');
+    // 위치 계산 (화면 가장자리 회피)
+    const ttRect = tooltip.getBoundingClientRect();
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let nx = x + 14, ny = y + 14;
+    if (nx + ttRect.width > vw - 8) nx = x - ttRect.width - 14;
+    if (ny + ttRect.height > vh - 8) ny = y - ttRect.height - 14;
+    if (nx < 8) nx = 8;
+    if (ny < 8) ny = 8;
+    tooltip.style.left = nx + 'px';
+    tooltip.style.top = ny + 'px';
+  }
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+  }
+
+  document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('[data-help]');
+    if (el && GLOSSARY[el.dataset.help]) {
+      showTooltip(el.dataset.help, e.clientX, e.clientY);
+    }
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (tooltip.classList.contains('visible')) {
+      const el = e.target.closest('[data-help]');
+      if (el && GLOSSARY[el.dataset.help]) {
+        showTooltip(el.dataset.help, e.clientX, e.clientY);
+      } else {
+        hideTooltip();
+      }
+    }
+  });
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget || !e.relatedTarget.closest('[data-help]')) {
+      hideTooltip();
+    }
+  });
+
+  // ============ MODAL ============
+  const modalOverlay = $('#modal-overlay');
+  const modalBody = $('#modal-body');
+
+  function renderModal() {
+    // 데이터 흐름 다이어그램 + 사전 카테고리별 정리
+    modalBody.innerHTML = `
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 데이터 흐름 (DantaLink Pipeline)</div>
+        <div class="flow-diagram">
+[<b>Stage 01 — 수집</b>]
+  RSS 8피드, GDELT, DART (옵션 Telegram)
+       ↓ <em>각 트리거에 휴리스틱 카테고리 분류</em>
+  ─────────────────────────────────
+  📄 <b>events_rss.json</b> / <b>events_demo.json</b>
+     각 이벤트: title, body, url, category, keywords, source
+  ─────────────────────────────────
+       ↓
+[<b>Stage 02 — 매칭</b>]  ← <em>현재 GUI가 시각화하는 단계</em>
+  📂 <b>data/krx_stocks.csv</b> (KRX 종목 2,878개 마스터)
+       │
+       ├─ Layer A: 음운(Phonological) 매칭
+       │    예: "아이진" 토큰 → 아이진(185490) EXACT
+       │
+       └─ Layer B: 의미(Semantic) 매칭
+            예: 키워드 "백신" → 차백신연구소·중앙백신
+       ↓
+  ─────────────────────────────────
+  📄 <b>matches_demo.json</b> / <b>matches_live.json</b>
+     top_stocks: [ {code, name, max_score, total_score, matches:[...]} ]
+  ─────────────────────────────────
+       ↓
+[<b>Stage 03~05 — 예정</b>]
+  필터(시총·유동성) → 사이징(Kelly 1/4) → 청산 규칙</div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ JSON 파일 역할</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['data_source_section'])}
+          <div class="glossary-card">
+            <div class="glossary-card-title">events_*.json (입력)</div>
+            <div class="glossary-card-body">Stage 01 수집 결과.
+
+<code>{
+  event_id, source, title, body, url,
+  published_at, collected_at,
+  category, keywords, entities, raw_payload
+}</code>
+
+CLI: <code>dantalink scan</code>로 생성.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-card-title">matches_*.json (출력)</div>
+            <div class="glossary-card-body">Stage 02 매칭 결과 — 현재 GUI가 이것을 시각화.
+
+<code>{
+  generated_at, event_count, stock_db_count,
+  top_stocks: [ {stock_code, stock_name, market,
+    marcap_eok, max_score, total_score,
+    match_count, layers, matches:[...] } ],
+  all_candidates: [...]
+}</code>
+
+CLI: <code>dantalink match</code>로 생성.</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-card-title">data/krx_stocks.csv (참조 DB)</div>
+            <div class="glossary-card-body">KRX 상장 종목 2,878개의 마스터 데이터.
+
+컬럼: <code>Code, Name, Market, Marcap_억원, Stocks</code>
+
+출처: FinanceDataReader.
+매일 새벽 1회 다운로드 권장.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 핵심 통계 (Statistics)</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['stat_events', 'stat_stocks', 'stat_candidates', 'stat_db'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 점수 체계 (방법론 §4 Stage 4)</div>
+        <div class="glossary-grid">
+          <div class="glossary-card">
+            <div class="glossary-card-title">0.30 — Layer A first-1</div>
+            <div class="glossary-card-body">첫 음절만 일치. 가장 약한 시그널.
+예: "고조" → "고려신용정보" (의미 없음)</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-card-title">0.40 — Layer A first-2 / Layer B 카테고리</div>
+            <div class="glossary-card-body">중간 강도.
+예: "아이진" → "아이센스"(첫 2음절 "아이" 일치)
+예: HEALTH 카테고리 → "삼성바이오로직스"("바이오" 테마)</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-card-title">0.50 — Layer B 키워드 substring</div>
+            <div class="glossary-card-body">이벤트 키워드가 종목명에 직접 포함.
+예: 키워드 "백신" → "차백신연구소", "중앙백신"</div>
+          </div>
+          <div class="glossary-card">
+            <div class="glossary-card-title">0.55 — EXACT match</div>
+            <div class="glossary-card-body">트리거에 종목명 직접 언급.
+가장 강한 시그널.
+예: "아이진 백신주 급등" → 아이진(185490)
+예: "비상교육 기출탭탭" → 비상교육(100220)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 매칭 레이어</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['layer_phonological', 'layer_semantic'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 이벤트 카테고리 (7종)</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['cat_health', 'cat_tech', 'cat_geopolitical', 'cat_person', 'cat_disaster', 'cat_regulatory', 'cat_unknown'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 필터 옵션</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['filter_top', 'filter_min_marcap', 'filter_max_marcap', 'sort_max', 'sort_total', 'layer_all'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 종목 카드 구성 요소</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['score_max', 'score_total', 'score_match_count', 'stock_code', 'stock_market', 'stock_marcap'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 시나리오</div>
+        <div class="glossary-grid">
+          ${renderGlossaryCards(['scenario_demo', 'scenario_live', 'scenario_upload'])}
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ 사용 흐름 (Quick Start)</div>
+        <div class="flow-diagram">
+1. 상단 시나리오 토글에서 <b>DEMO</b> 선택
+   → 방법론 §2.4 사례 (분디부교/샘 알트먼/호르무즈) 매칭 결과 로드
+
+2. 좌측 사이드바 통계로 전체 매칭 규모 확인
+   → Events 3 / Stocks ~100 / Candidates ~120
+
+3. <b>Max Marcap = 5000</b> 입력 (단타용 시총 상한)
+4. <b>Sort = MAX</b> 선택 (단일 강한 신호 우선)
+5. 메인 그리드에서 종목 카드 클릭
+6. 우측 패널에서 매칭 근거(어떤 이벤트의 어떤 키워드) 확인
+
+→ <b>LIVE RSS</b>로 전환하면 실제 RSS 라이브 수집 결과
+→ <b>UPLOAD</b>로 새로 생성한 matches_*.json 직접 로드</div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">▸ CLI 명령 (산출물 생성)</div>
+        <div class="flow-diagram">
+<em># 1. Stage 01 — 수집 → events_rss.json</em>
+PYTHONIOENCODING=utf-8 python -m dantalink.cli scan \\
+    --keywords "AI,Samsung,에볼라,OpenAI" \\
+    --timespan 24h --sources rss \\
+    --max-records 20 --output events_rss.json
+
+<em># 2. Stage 02 — 매칭 → matches_live.json</em>
+PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
+    --input events_rss.json \\
+    --output matches_live.json \\
+    --top 30 --min-marcap 100 --max-marcap 5000 \\
+    --sort max
+
+<em># 3. 본 GUI에서 UPLOAD 버튼 → matches_live.json 선택</em></div>
+      </div>
+    `;
+  }
+
+  function renderGlossaryCards(keys) {
+    return keys.map(k => {
+      const entry = GLOSSARY[k];
+      if (!entry) return '';
+      return `<div class="glossary-card">
+        <div class="glossary-card-title">${escapeHtml(entry.title)}</div>
+        <div class="glossary-card-body">${escapeHtml(entry.body).replace(/`([^`]+)`/g, '<code>$1</code>')}</div>
+      </div>`;
+    }).join('');
+  }
+
+  $('#help-btn').addEventListener('click', () => {
+    renderModal();
+    modalOverlay.classList.add('visible');
+    hideTooltip();
+  });
+  $('#modal-close').addEventListener('click', () => modalOverlay.classList.remove('visible'));
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) modalOverlay.classList.remove('visible');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') modalOverlay.classList.remove('visible');
+  });
+
+  // ============ DATA LOADING ============
+  async function loadFromUrl(url) {
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      setData(data, url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  function loadFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        setData(data, file.name);
+      } catch (err) {
+        alert('JSON 파싱 실패: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+  function setData(data, sourceLabel) {
+    STATE.data = data;
+    STATE.selectedStock = null;
+    $('#data-source-info').innerHTML =
+      `<div style="color:var(--terran); font-weight:700;">${escapeHtml(sourceLabel)}</div>` +
+      `<div style="margin-top:4px;">${data.event_count || 0} events · ${(data.top_stocks || []).length} stocks</div>` +
+      `<div style="margin-top:2px; color:var(--ink-faint);">generated: ${escapeHtml((data.generated_at || '').slice(0, 19))}</div>`;
+    $('#footer-data-info').textContent = sourceLabel;
+    render();
+  }
+
+  // ============ RENDER ============
+  function render() {
+    if (!STATE.data || !STATE.data.top_stocks) {
+      $('#stock-grid').innerHTML = '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--ink-faint);">NO DATA LOADED</div>';
+      return;
+    }
+    const stocks = STATE.data.top_stocks;
+    $('#stat-events').textContent = formatNumber(STATE.data.event_count || 0);
+    $('#stat-stocks').textContent = formatNumber(stocks.length);
+    $('#stat-candidates').textContent = formatNumber(stocks.reduce((sum, s) => sum + s.match_count, 0));
+    $('#stat-db').textContent = formatNumber(STATE.data.stock_db_count || 0);
+
+    let filtered = stocks.slice();
+    if (STATE.minMarcap > 0) filtered = filtered.filter(s => s.marcap_eok >= STATE.minMarcap);
+    if (STATE.maxMarcap > 0) filtered = filtered.filter(s => s.marcap_eok <= STATE.maxMarcap);
+    if (STATE.layerFilter !== 'all') {
+      filtered = filtered.filter(s => s.layers && s.layers.includes(STATE.layerFilter));
+    }
+    filtered.sort((a, b) => {
+      if (STATE.sort === 'max') return (b.max_score - a.max_score) || (b.total_score - a.total_score);
+      return (b.total_score - a.total_score) || (b.max_score - a.max_score);
+    });
+    filtered = filtered.slice(0, STATE.topN);
+
+    const catCounts = {};
+    stocks.forEach(s => (s.matches || []).forEach(m => {
+      const cat = m.event_category || 'unknown';
+      catCounts[cat] = (catCounts[cat] || 0) + 1;
+    }));
+    renderCategoryBar(catCounts);
+
+    const grid = $('#stock-grid');
+    grid.innerHTML = '';
+    filtered.forEach((s, idx) => {
+      const card = document.createElement('div');
+      card.className = 'stock-card' + (STATE.selectedStock === s.stock_code ? ' selected' : '');
+      card.dataset.code = s.stock_code;
+      const layersHtml = (s.layers || []).map(L => {
+        const help = L === 'phonological' ? 'layer_badge_phon' : 'layer_badge_sem';
+        return `<span class="layer-badge layer-${L}" data-help="${help}">${L === 'phonological' ? '音韻' : '意味'}</span>`;
+      }).join('');
+      card.innerHTML = `
+        <div class="stock-rank">${idx + 1}</div>
+        <div class="stock-name">${escapeHtml(s.stock_name)}</div>
+        <div class="stock-code" data-help="stock_code">${s.stock_code}</div>
+        <div class="stock-marcap" data-help="stock_marcap">
+          <span class="stock-market" data-help="stock_market">${s.market}</span>
+          시총 ${formatNumber(s.marcap_eok)}억
+        </div>
+        <div class="stock-scores">
+          <div class="score-cell" data-help="score_max">
+            <div class="label">MAX</div>
+            <div class="value">${s.max_score.toFixed(2)}</div>
+          </div>
+          <div class="score-cell dim" data-help="score_total">
+            <div class="label">TOTAL</div>
+            <div class="value">${s.total_score.toFixed(2)}</div>
+          </div>
+          <div class="score-cell dim" data-help="score_match_count">
+            <div class="label">매칭</div>
+            <div class="value">${s.match_count}</div>
+          </div>
+        </div>
+        <div class="stock-layers">${layersHtml}</div>
+      `;
+      card.addEventListener('click', () => selectStock(s.stock_code));
+      grid.appendChild(card);
+    });
+    $('#stock-count-display').textContent = `— ${filtered.length} visible (filtered from ${stocks.length})`;
+    if (STATE.selectedStock) {
+      const s = stocks.find(x => x.stock_code === STATE.selectedStock);
+      if (s) renderDetail(s);
+    }
+  }
+
+  function renderCategoryBar(catCounts) {
+    const total = Object.values(catCounts).reduce((a, b) => a + b, 0);
+    const bar = $('#category-bar');
+    const legend = $('#cat-legend');
+    bar.innerHTML = '';
+    legend.innerHTML = '';
+    if (total === 0) {
+      bar.innerHTML = '<div style="color:var(--ink-faint); font-size:10px; padding:2px;">no data</div>';
+      return;
+    }
+    const cats = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
+    cats.forEach(([cat, n]) => {
+      const seg = document.createElement('div');
+      seg.className = 'cat-segment cat-' + cat;
+      seg.style.flex = n;
+      seg.dataset.help = 'cat_' + cat;
+      seg.title = `${cat}: ${n}`;
+      bar.appendChild(seg);
+      const li = document.createElement('div');
+      li.className = 'cat-legend-item';
+      li.dataset.help = 'cat_' + cat;
+      li.innerHTML = `<div class="cat-dot cat-${cat}"></div><span class="text-cat-${cat}">${cat}</span><span style="color:var(--ink-faint);">${n}</span>`;
+      legend.appendChild(li);
+    });
+  }
+
+  function selectStock(code) {
+    STATE.selectedStock = code;
+    const s = STATE.data.top_stocks.find(x => x.stock_code === code);
+    if (s) renderDetail(s);
+    $$('.stock-card').forEach(c => c.classList.toggle('selected', c.dataset.code === code));
+  }
+
+  function renderDetail(s) {
+    const detail = $('#detail');
+    const matchesHtml = (s.matches || []).map(m => {
+      const cat = m.event_category || 'unknown';
+      const layerLabel = m.layer === 'phonological' ? '音韻 (음운)' : '意味 (의미)';
+      return `
+        <div class="match-card layer-${m.layer}">
+          <div class="match-header">
+            <span class="match-meta" data-help="match_meta">${layerLabel}</span>
+            <span class="match-score" data-help="match_score">${m.score.toFixed(2)}</span>
+          </div>
+          <div class="match-keyword" data-help="match_keyword">
+            매칭 단서: <strong>${escapeHtml(m.matched_on || '')}</strong>
+          </div>
+          <div class="match-event">
+            <span class="match-event-category text-cat-${cat}" data-help="cat_${cat}">${cat}</span>${escapeHtml(m.event_title || '(no title)')}
+          </div>
+        </div>
+      `;
+    }).join('');
+    detail.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-stock-name">${escapeHtml(s.stock_name)}</div>
+        <div class="detail-stock-meta">
+          <span class="detail-stock-code" data-help="stock_code">${s.stock_code}</span> ·
+          <span data-help="stock_market">${s.market}</span> ·
+          <span data-help="stock_marcap">시총 ${formatNumber(s.marcap_eok)}억원</span>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">▸ Match Evidence (${s.match_count})</div>
+        ${matchesHtml || '<div class="detail-empty">no matches</div>'}
+      </div>
+    `;
+  }
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    return String(text)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  // ============ EVENT WIRING ============
+  $$('.scenario-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const source = btn.dataset.source;
+      $$('.scenario-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (source === '__upload__') { $('#file-input').click(); return; }
+      const ok = await loadFromUrl('../' + source);
+      if (!ok) {
+        const ok2 = await loadFromUrl('./' + source);
+        if (!ok2) {
+          if (source === 'matches_demo.json') {
+            setData(SAMPLE_DEMO, '(embedded sample)');
+          } else {
+            alert('JSON 로드 실패: ' + source + '\n\nfile:// 직접 열기는 fetch가 차단됩니다.\n\n해결:\n1. 프로젝트 루트에서 `python -m http.server 8000` 후 http://localhost:8000/docs/DantaLink_종목추출_GUI.html\n2. 또는 UPLOAD로 직접 선택');
+          }
+        }
+      }
+    });
+  });
+
+  $('#file-input').addEventListener('change', (e) => { if (e.target.files[0]) loadFromFile(e.target.files[0]); });
+  $('#file-zone').addEventListener('click', () => $('#file-input').click());
+  $('#file-zone').addEventListener('dragover', (e) => { e.preventDefault(); e.currentTarget.classList.add('dragover'); });
+  $('#file-zone').addEventListener('dragleave', (e) => { e.currentTarget.classList.remove('dragover'); });
+  $('#file-zone').addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) loadFromFile(e.dataTransfer.files[0]);
+  });
+
+  $('#filter-top').addEventListener('input', (e) => { STATE.topN = parseInt(e.target.value) || 30; render(); });
+  $('#filter-min-marcap').addEventListener('input', (e) => { STATE.minMarcap = parseInt(e.target.value) || 0; render(); });
+  $('#filter-max-marcap').addEventListener('input', (e) => { STATE.maxMarcap = parseInt(e.target.value) || 0; render(); });
+
+  $$('[data-sort]').forEach(btn => btn.addEventListener('click', () => {
+    $$('[data-sort]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    STATE.sort = btn.dataset.sort;
+    render();
+  }));
+  $$('[data-layer]').forEach(btn => btn.addEventListener('click', () => {
+    $$('[data-layer]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    STATE.layerFilter = btn.dataset.layer;
+    render();
+  }));
+
+  // ============ INIT ============
+  (async () => {
+    const ok = await loadFromUrl('../matches_demo.json');
+    if (!ok) {
+      const ok2 = await loadFromUrl('./matches_demo.json');
+      if (!ok2) setData(SAMPLE_DEMO, '(embedded sample — file:// fallback)');
+    }
+  })();
+})();
+</script>
+</body>
+</html>
