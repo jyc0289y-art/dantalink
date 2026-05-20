@@ -620,6 +620,65 @@
     background: rgba(255, 140, 66, 0.1);
   }
   .badge-warn::before { content: '⚠ '; }
+  /* Sprint 2 — 실사업 구분 배지 */
+  .badge-genuine {
+    color: #000;
+    background: var(--green);
+    border-color: var(--green);
+    font-weight: 900;
+  }
+  .badge-genuine::before { content: '✓ '; }
+  .badge-name-only {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(255, 58, 58, 0.12);
+    font-weight: 700;
+  }
+  .badge-name-only::before { content: '✗ '; }
+  .badge-mixed {
+    color: var(--orange);
+    border-color: var(--orange);
+    background: rgba(255, 140, 66, 0.1);
+  }
+  .badge-mixed::before { content: '◐ '; }
+  .stock-card.match-genuine {
+    border-color: var(--green);
+  }
+  .stock-card.match-name_only {
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px rgba(255, 58, 58, 0.4);
+  }
+  .stock-card.match-name_only::before { background: var(--red); }
+  /* 매칭 카드 authenticity 표시 */
+  .match-auth {
+    display: inline-block;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    padding: 1px 5px;
+    margin-left: 6px;
+    border: 1px solid currentColor;
+    text-transform: uppercase;
+  }
+  .match-auth.genuine { color: var(--green); }
+  .match-auth.name_only { color: var(--red); }
+  .match-auth.standard { color: var(--ink-dim); }
+  .match-auth.phonological { color: var(--cyan); }
+  .match-auth.unknown { color: var(--ink-faint); }
+  .business-info {
+    background: var(--bg-input);
+    border-left: 2px solid var(--cyan);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 11px;
+  }
+  .business-info .k {
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .business-info .v { color: var(--ink); }
   .stock-card.has-dual {
     border-color: var(--green);
     box-shadow: 0 0 0 1px var(--green), 0 0 12px var(--green-glow);
@@ -1501,6 +1560,39 @@
       title: '⚠ 사명 매칭 — 카테고리 박스 부작용 가능',
       body: '종목명에 카테고리 테마 키워드가 직접 포함되어 매칭이 일어남.\n\n부작용 예: "사피엔반도체"는 메모리가 아닌 DDI(디스플레이 구동 IC) 회사. 그러나 사명에 "반도체"가 있어 메모리 슈퍼사이클 뉴스에 자동 묶여 매칭됨.\n\n→ 매수 전 실제 사업 영역 한 번 더 확인 필요. 신뢰도는 0.40~0.50으로 보이지만 사업 실체와 어긋날 수 있음.'
     },
+    // Sprint 2 — 실사업 구분 (KRX-DESC Industry/Products cross-check)
+    badge_genuine: {
+      title: '✓ GENUINE — 진짜 매칭',
+      body: '매칭 키워드가 종목의 실제 Industry/Products(KRX-DESC)에도 포함됨.\n\n예: "백신" 매칭 + 차백신연구소의 Products="백신 및 면역증강제" → ✓ GENUINE.\n\n사명/카테고리 매칭이 실제 사업과 일치하는 가장 신뢰도 높은 매칭.'
+    },
+    badge_name_only: {
+      title: '✗ NAME-ONLY — 사명만 매칭 (부작용)',
+      body: '매칭 키워드가 종목명에는 있지만 실제 Industry/Products에는 없음.\n\n예: 미래반도체의 Industry="기타 전문 도매업" — 사명에는 "반도체"가 있지만 실제는 도매업. "반도체" 키워드 매칭은 부작용.\n\n매수 전 반드시 사업 영역 재확인 필요.'
+    },
+    badge_mixed: {
+      title: '◐ MIXED — 일부 매칭만 진짜',
+      body: '의미 매칭 중 일부는 실제 사업과 일치(GENUINE), 일부는 사명만(NAME-ONLY).\n\n예: 종목이 "백신·바이오" 키워드로 매칭됐는데 백신은 실제 사업, 바이오는 사명만인 경우.\n\n매칭별 ✓/✗ 표시 확인 후 진짜 시그널만 고려.'
+    },
+    auth_genuine: {
+      title: '✓ GENUINE — 이 매칭은 진짜',
+      body: '이 매칭의 키워드(matched_on)가 종목 Industry/Products에 실제로 포함됨. 진짜 시그널.'
+    },
+    auth_name_only: {
+      title: '✗ NAME-ONLY — 이 매칭은 부작용',
+      body: '이 매칭은 사명에만 있는 키워드로 일어남. 실제 사업과 무관 가능성. 신중.'
+    },
+    auth_standard: {
+      title: '◯ STANDARD — 일반 의미 매칭',
+      body: '키워드가 카테고리 테마(예: "테크")이고 사명/사업 모두에 명시적으로는 없음. 약한 시그널.'
+    },
+    auth_phonological: {
+      title: '音韻 — 음운 매칭 (Layer A)',
+      body: 'authenticity 평가 대상이 아님. 첫 음절 매칭이므로 사명 그 자체.'
+    },
+    business_info: {
+      title: '실제 사업 정보 (KRX-DESC)',
+      body: 'Industry: KRX 공식 산업분류\nProducts: 회사 주요 제품/서비스\n\n출처: finance-datareader KRX-DESC.\n사명과 다른 사업을 하는 종목 식별의 기준.'
+    },
     star_rating: {
       title: '신뢰도 등급 (★★★★/★★★/★★/★)',
       body: 'max_score를 4단계로 시각화:\n\n★★★★ — max 0.55+ (EXACT) 또는 Dual\n★★★  — max 0.50 (키워드 substring)\n★★   — max 0.40 (first 2 음절 또는 카테고리 테마)\n★    — max 0.30 (first 1 음절, 약한 시그널)\n\nDual 매칭은 +1 보너스 (★★★ → ★★★★).'
@@ -1568,6 +1660,16 @@
   }
   // 페이지 로드 시 비동기로 events join map 준비 (블로킹 X)
   loadEventsForOverlay();
+
+  // KRX 섹터 DB (Sprint 2 — 실사업 구분) 비동기 로드
+  STATE.sectorDB = null;
+  (async () => {
+    if (window.DantaLink && window.DantaLink.KRXSectorDB) {
+      STATE.sectorDB = await window.DantaLink.KRXSectorDB.fromUrl();
+      // 섹터 DB 로드 완료 후 현재 화면 다시 렌더 (matchType 반영)
+      if (STATE.data) render();
+    }
+  })();
 
   // ============ EMBEDDED SAMPLE ============
   const SAMPLE_DEMO = {
@@ -1959,7 +2061,38 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       }
     }
 
-    return { isDual, isExact, stars, starText, starHtml, mechanism, warnings };
+    // ===== Sprint 2: 매칭별 authenticity 분류 + 종목 종합 matchType =====
+    const matchAuths = [];   // per-match: phonological/genuine/name_only/standard/unknown
+    let authCounts = { genuine: 0, name_only: 0, standard: 0, phonological: 0, unknown: 0 };
+    if (STATE.sectorDB && window.DantaLink && window.DantaLink.classifyMatchAuthenticity) {
+      for (const m of (stock.matches || [])) {
+        const auth = window.DantaLink.classifyMatchAuthenticity(m, stock.stock_code, stock.stock_name, STATE.sectorDB);
+        matchAuths.push(auth);
+        authCounts[auth] = (authCounts[auth] || 0) + 1;
+      }
+    }
+    // 종목 종합 matchType
+    let matchType = 'unknown';
+    if (STATE.sectorDB) {
+      const semanticTotal = authCounts.genuine + authCounts.name_only + authCounts.standard;
+      if (semanticTotal === 0) {
+        matchType = authCounts.phonological > 0 ? 'phonological' : 'unknown';
+      } else if (authCounts.name_only > 0 && authCounts.genuine === 0) {
+        matchType = 'name_only';  // 모든 의미 매칭이 사명만
+      } else if (authCounts.genuine > 0 && authCounts.name_only === 0) {
+        matchType = 'genuine';     // 모든 의미 매칭이 진짜 사업과 일치
+      } else if (authCounts.genuine > 0 && authCounts.name_only > 0) {
+        matchType = 'mixed';        // 일부만 진짜
+      } else {
+        matchType = 'standard';
+      }
+    }
+    // 섹터 DB 기반 부가 정보
+    const businessInfo = (STATE.sectorDB && window.DantaLink && window.DantaLink.KRXSectorDB)
+      ? STATE.sectorDB.getBusinessText(stock.stock_code) : null;
+
+    return { isDual, isExact, stars, starText, starHtml, mechanism, warnings,
+             matchAuths, authCounts, matchType, businessInfo };
   }
 
   function render() {
@@ -2001,15 +2134,26 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       if (STATE.selectedStock === s.stock_code) cls += ' selected';
       if (insight.isDual) cls += ' has-dual';
       if (insight.warnings.length > 0) cls += ' has-warn';
+      if (insight.matchType === 'genuine' || insight.matchType === 'name_only') cls += ' match-' + insight.matchType;
       card.className = cls;
       card.dataset.code = s.stock_code;
       const layersHtml = (s.layers || []).map(L => {
         const help = L === 'phonological' ? 'layer_badge_phon' : 'layer_badge_sem';
         return `<span class="layer-badge layer-${L}" data-help="${help}">${L === 'phonological' ? '音韻' : '意味'}</span>`;
       }).join('');
+      // Sprint 2 — matchType 배지
+      let matchTypeBadge = '';
+      if (insight.matchType === 'genuine') {
+        matchTypeBadge = `<span class="badge badge-genuine" data-help="badge_genuine">GENUINE</span>`;
+      } else if (insight.matchType === 'name_only') {
+        matchTypeBadge = `<span class="badge badge-name-only" data-help="badge_name_only">NAME-ONLY</span>`;
+      } else if (insight.matchType === 'mixed') {
+        matchTypeBadge = `<span class="badge badge-mixed" data-help="badge_mixed">MIXED</span>`;
+      }
       const badgesHtml = [
         insight.isDual ? `<span class="badge badge-dual" data-help="badge_dual">🔥 DUAL</span>` : '',
         insight.isExact ? `<span class="badge badge-exact" data-help="badge_exact">⭐ EXACT</span>` : '',
+        matchTypeBadge,
         ...insight.warnings.map(w => `<span class="badge badge-warn" data-help="badge_warn">${escapeHtml(w)}</span>`)
       ].filter(Boolean).join('');
       card.innerHTML = `
@@ -2107,14 +2251,26 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
 
   function renderDetail(s) {
     const detail = $('#detail');
+    const insight = computeInsight(s);
     const sortedMatches = sortMatches(s.matches, STATE.matchSort);
+    // 정렬된 순서에 따른 authenticity 다시 매핑 (원본 인덱스 vs 정렬 인덱스)
+    const originalOrder = s.matches || [];
     const matchesHtml = sortedMatches.map((m, idx) => {
       const cat = m.event_category || 'unknown';
       const layerLabel = m.layer === 'phonological' ? '音韻 (음운)' : '意味 (의미)';
+      // 원본 인덱스로 authenticity 찾기
+      const origIdx = originalOrder.indexOf(m);
+      const auth = (insight.matchAuths && origIdx >= 0) ? insight.matchAuths[origIdx] : 'unknown';
+      let authBadge = '';
+      if (auth === 'genuine') authBadge = '<span class="match-auth genuine" data-help="auth_genuine">✓ GENUINE</span>';
+      else if (auth === 'name_only') authBadge = '<span class="match-auth name_only" data-help="auth_name_only">✗ NAME-ONLY</span>';
+      else if (auth === 'standard') authBadge = '<span class="match-auth standard" data-help="auth_standard">◯ STANDARD</span>';
+      else if (auth === 'phonological') authBadge = '<span class="match-auth phonological" data-help="auth_phonological">音韻</span>';
+      else if (auth === 'unknown' && STATE.sectorDB) authBadge = '<span class="match-auth unknown">? UNKNOWN</span>';
       return `
         <div class="match-card layer-${m.layer}" data-match-idx="${idx}">
           <div class="match-header">
-            <span class="match-meta" data-help="match_meta">${layerLabel}</span>
+            <span class="match-meta" data-help="match_meta">${layerLabel}${authBadge}</span>
             <span class="match-score" data-help="match_score">${m.score.toFixed(2)}</span>
           </div>
           <div class="match-keyword" data-help="match_keyword">
@@ -2127,6 +2283,16 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
         </div>
       `;
     }).join('');
+    // 실사업 정보 패널 (Sprint 2)
+    let businessHtml = '';
+    if (insight.businessInfo) {
+      businessHtml = `
+        <div class="business-info" data-help="business_info">
+          <div><span class="k">Industry</span><span class="v">${escapeHtml(insight.businessInfo.industry || '(N/A)')}</span></div>
+          <div style="margin-top:4px;"><span class="k">Products</span><span class="v">${escapeHtml(insight.businessInfo.products || '(N/A)')}</span></div>
+        </div>
+      `;
+    }
     detail.innerHTML = `
       <div class="detail-header">
         <div class="detail-stock-name">${escapeHtml(s.stock_name)}</div>
@@ -2136,6 +2302,7 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
           <span data-help="stock_marcap">시총 ${formatNumber(s.marcap_eok)}억원</span>
         </div>
       </div>
+      ${businessHtml}
       <div>
         <div class="section-title">▸ Match Evidence (${s.match_count})</div>
         <div class="match-sort-row">

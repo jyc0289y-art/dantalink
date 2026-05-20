@@ -421,10 +421,67 @@
     }
   }
 
+  // ===== KRX Sector DB (Sprint 2 — 실사업 구분) =====
+  // data/krx_sectors.json: [[code, industry, products], ...]
+  // 사명 매칭(예: 사피엔반도체="반도체")이 종목의 실제 Industry/Products와 일치하는지 cross-check
+  class KRXSectorDB {
+    constructor(rows) {
+      // rows: [[code, industry, products], ...]
+      this.byCode = new Map();
+      for (const [c, ind, prod] of rows) {
+        this.byCode.set(c, { industry: ind || '', products: prod || '' });
+      }
+    }
+    static async fromUrl(url) {
+      const candidates = ['data/krx_sectors.json', '../data/krx_sectors.json', './data/krx_sectors.json'];
+      const tryUrls = url ? [url, ...candidates] : candidates;
+      for (const u of tryUrls) {
+        try {
+          const r = await fetch(u);
+          if (!r.ok) continue;
+          const data = await r.json();
+          return new KRXSectorDB(data);
+        } catch (_) {}
+      }
+      return null;  // fallback — null 반환 (cross-check 단순 skip)
+    }
+    /** 키워드가 종목의 Industry+Products 텍스트에 포함되는지 */
+    isKeywordInBusiness(stockCode, keyword) {
+      const s = this.byCode.get(stockCode);
+      if (!s) return null;  // 미등록 종목
+      if (!keyword) return false;
+      const blob = (s.industry + ' ' + s.products).toLowerCase();
+      return blob.includes(keyword.toLowerCase());
+    }
+    getBusinessText(stockCode) {
+      const s = this.byCode.get(stockCode);
+      if (!s) return null;
+      return { industry: s.industry, products: s.products };
+    }
+  }
+
+  /** 단일 매칭의 진정성 분류 */
+  function classifyMatchAuthenticity(match, stockCode, stockName, sectorDB) {
+    // Layer A (음운)은 사명 first-syllable 매칭 — 의미 매칭과 다른 본질이라 'phonological' 그대로
+    if (match.layer === 'phonological') return 'phonological';
+    if (!sectorDB) return 'unknown';
+    const matchedOn = match.matched_on || '';
+    // 사명에 포함됐는지
+    const inName = stockName.includes(matchedOn);
+    // Industry/Products에 포함됐는지
+    const inBusiness = sectorDB.isKeywordInBusiness(stockCode, matchedOn);
+    if (inBusiness === null) return 'unknown';  // 섹터 정보 없음
+    if (inBusiness) return 'genuine';            // 실제 사업과 일치
+    if (inName) return 'name_only';              // 사명에만 있음 → 부작용
+    return 'standard';                            // 기타 (있을 법한 카테고리 테마)
+  }
+
   // ===== Export =====
   global.DantaLink = global.DantaLink || {};
   global.DantaLink.MatcherEngine = MatcherEngine;
   global.DantaLink.KRXStockDB = KRXStockDB;
+  global.DantaLink.KRXSectorDB = KRXSectorDB;
+  global.DantaLink.classifyMatchAuthenticity = classifyMatchAuthenticity;
   global.DantaLink.classify = classify;
   global.DantaLink.matchesAnyKeyword = matchesAnyKeyword;
   global.DantaLink.CATEGORY_KEYWORDS = CATEGORY_KEYWORDS;
