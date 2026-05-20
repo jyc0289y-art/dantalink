@@ -327,13 +327,15 @@
         <div class="control-group">
           <label class="control-label">Pre-collected Data</label>
           <select id="dataset-select" class="control-input">
+            <option value="__all__">🌐 ALL (전체 시장 — 모든 데이터셋)</option>
             <option value="events_rss.json">events_rss.json (LIVE 20건)</option>
             <option value="events_demo.json">events_demo.json (DEMO 3건)</option>
           </select>
         </div>
         <div style="font-size:10px; color:var(--ink-faint); margin-top:6px; line-height:1.45;">
           ⓘ 브라우저 CORS 제약으로 외부 RSS 직접 호출 불가.<br>
-          사전 수집된 데이터셋에 키워드+소스 필터 적용.
+          <strong style="color:var(--cyan);">ALL</strong> = 모든 사전 수집 데이터를 합산해 시장 전반의 트렌드 파악.<br>
+          키워드+데이터셋 모두 비울 수 있음 (Discover 모드).
         </div>
       </div>
 
@@ -384,11 +386,12 @@
 
   const STATE = {
     sources: { rss: true, gdelt: false, dart: false, telegram: false },
-    keywords: ['AI', '에볼라', 'OpenAI', 'Samsung'],
+    keywords: [],   // 빈 배열 default — Discover 모드 (시장 전체 트렌딩)
     timespan: '24H',
-    dataset: 'events_rss.json',
+    dataset: '__all__',  // ALL default — 모든 데이터셋 합산
     collectedEvents: [],
   };
+  const AVAILABLE_DATASETS = ['events_rss.json', 'events_demo.json'];
 
   function $(s) { return document.querySelector(s); }
   function $$(s) { return Array.from(document.querySelectorAll(s)); }
@@ -460,30 +463,52 @@
     $('#btn-scan').disabled = true;
     $('#btn-scan').textContent = '⏳ SCANNING...';
     const kwLabel = STATE.keywords.length === 0 ? '(없음 — 전체 패스)' : STATE.keywords.join(',');
-    log(`▶ 스캔 시작 · sources=${activeSrc.join(',')} · keywords=${kwLabel} · timespan=${STATE.timespan}`, 'info');
+    const dsLabel = STATE.dataset === '__all__' ? '🌐 ALL (전체 시장)' : STATE.dataset;
+    log(`▶ 스캔 시작 · sources=${activeSrc.join(',')} · keywords=${kwLabel} · timespan=${STATE.timespan} · dataset=${dsLabel}`, 'info');
     if (STATE.keywords.length === 0) {
       log('  ⓘ 키워드 미지정 모드 — 모든 이벤트 통과 (Discover 용)', 'warn');
     }
-    log(`▶ 데이터셋 fetch: ${STATE.dataset}`, 'info');
+
+    // 데이터셋 fetch — ALL이면 다중 fetch + concat + dedup
+    const datasetsToFetch = STATE.dataset === '__all__' ? AVAILABLE_DATASETS : [STATE.dataset];
+    log(`▶ 데이터셋 ${datasetsToFetch.length}개 fetch: ${datasetsToFetch.join(', ')}`, 'info');
 
     let allEvents = [];
-    const candidates = ['../' + STATE.dataset, './' + STATE.dataset];
-    let loaded = false;
-    for (const url of candidates) {
-      try {
-        const resp = await fetch(url);
-        if (!resp.ok) continue;
-        allEvents = await resp.json();
-        log(`  ✓ ${allEvents.length}건 로드됨 (${url})`, 'ok');
-        loaded = true; break;
-      } catch (_) { continue; }
+    let totalLoaded = 0;
+    for (const ds of datasetsToFetch) {
+      let loadedOne = false;
+      for (const url of ['../' + ds, './' + ds]) {
+        try {
+          const resp = await fetch(url);
+          if (!resp.ok) continue;
+          const data = await resp.json();
+          allEvents = allEvents.concat(data);
+          log(`  ✓ ${ds}: ${data.length}건 로드`, 'ok');
+          totalLoaded++;
+          loadedOne = true;
+          break;
+        } catch (_) { continue; }
+      }
+      if (!loadedOne) log(`  ✗ ${ds}: 로드 실패 (skip)`, 'err');
     }
-    if (!loaded) {
-      log('  ✗ 데이터셋 로드 실패 — file:// 직접 열기 시 fetch 차단됨', 'err');
+    if (totalLoaded === 0) {
+      log('  ✗ 모든 데이터셋 로드 실패 — file:// 직접 열기 시 fetch 차단됨', 'err');
       log('  → http://localhost:8000 또는 GitHub Pages에서 열어주세요', 'err');
       $('#btn-scan').disabled = false;
       $('#btn-scan').textContent = '▶ INITIATE SCAN';
       return;
+    }
+    // event_id 기준 중복 제거 (ALL 모드에서 같은 이벤트 두 데이터셋에 있을 수 있음)
+    if (datasetsToFetch.length > 1) {
+      const seen = new Set();
+      const dedup = [];
+      for (const e of allEvents) {
+        const id = e.event_id || (e.source || '') + '::' + (e.url || e.title || '');
+        if (!seen.has(id)) { seen.add(id); dedup.push(e); }
+      }
+      const dupCount = allEvents.length - dedup.length;
+      allEvents = dedup;
+      log(`  ▶ 합산 결과: ${allEvents.length}건 (중복 ${dupCount}건 제거)`, 'ok');
     }
 
     const srcFiltered = allEvents.filter(e => activeSrc.includes(e.source));
@@ -564,15 +589,22 @@
     alert([
       '【 Data Collection Console — 사용법 】',
       '',
-      '1. 좌측 ▸ Data Sources에서 활성화할 소스 토글 (현재 RSS만 실제 동작)',
-      '2. ▸ Watch Keywords에 키워드 입력 + Enter (또는 + ADD)',
-      '3. ▸ Timespan 선택',
-      '4. ▸ Sample Dataset 선택 (events_rss.json LIVE 20건 / events_demo.json DEMO 3건)',
-      '5. ▶ INITIATE SCAN — 데이터셋 fetch + 소스/키워드 필터 + 콘솔 로그 + 우측 패널 표시',
-      '6. ▶ FORWARD TO MATCHER — 수집된 이벤트를 Stock Match Console로 전달 (localStorage 브리지)',
+      '✦ 두 가지 모드 ✦',
+      '  📋 Watch Mode : 키워드를 미리 정해두고 그 키워드 관련 이벤트만 필터',
+      '  🌐 Discover Mode : 키워드·데이터셋 모두 비우고 시장 전체 이벤트로 트렌드 파악',
       '',
-      'ⓘ 브라우저 CORS 제약으로 외부 RSS/GDELT 직접 호출 불가.',
-      '  실제 라이브 수집은 Python CLI (dantalink scan)에서 수행 후 GitHub에 업로드.'
+      '1. 좌측 ▸ Data Sources 토글 (현재 RSS만 실제 동작)',
+      '2. ▸ Watch Keywords — 키워드 입력 (선택, 비워도 OK)',
+      '3. ▸ Timespan 선택',
+      '4. ▸ Sample Dataset — 🌐 ALL (default, 전체 합산) 또는 단일 선택',
+      '5. ▶ INITIATE SCAN — 데이터셋 fetch + 필터 + 우측 패널 표시',
+      '6. ▶ FORWARD TO MATCHER — 수집 이벤트를 Stock Match로 전달',
+      '',
+      'ⓘ 모든 입력을 비우고 ▶ INITIATE SCAN 누르면',
+      '   "시장 전체에 지금 어떤 키워드가 등장하는가" 파악 가능 (Discover 모드).',
+      '',
+      'ⓘ 브라우저 CORS 제약으로 외부 RSS 직접 호출 불가.',
+      '   실제 라이브 수집은 Python CLI (dantalink scan).'
     ].join('\n'));
   });
 
