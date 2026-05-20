@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DantaLink — 행동재무 기반 한국시장 단타 발굴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-void: #050810;
+    --bg-deep: #0a0f17;
+    --bg-panel: #131820;
+    --bg-elevated: #1a212c;
+    --border: #2a3441;
+    --ink: #c8d4e0;
+    --ink-dim: #7a8a9c;
+    --ink-faint: #4a5668;
+    --terran: #ffb627;
+    --terran-glow: rgba(255, 182, 39, 0.4);
+    --cyan: #4ecdc4;
+    --cyan-glow: rgba(78, 205, 196, 0.3);
+    --green: #4ade80;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Orbitron', 'JetBrains Mono', monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-void);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg, transparent 0, transparent 2px,
+      rgba(255, 182, 39, 0.015) 2px,
+      rgba(255, 182, 39, 0.015) 3px);
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.45) 100%);
+  }
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    position: relative;
+  }
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: 0.08em;
+    color: var(--terran);
+    text-shadow: 0 0 16px var(--terran-glow);
+    margin-bottom: 4px;
+  }
+  .tagline {
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin: 36px 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  p { margin-bottom: 12px; color: var(--ink); }
+  p strong { color: var(--terran); font-weight: 700; }
+  .lead {
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+  .pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    animation: pulse 2s infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .nav-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.15s;
+    display: block;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px; height: 100%;
+    background: var(--terran);
+    transform: translateX(-100%);
+    transition: transform 0.15s;
+  }
+  .nav-card:hover {
+    background: var(--bg-elevated);
+    border-color: var(--terran);
+    box-shadow: 0 0 16px var(--terran-glow);
+  }
+  .nav-card:hover::before { transform: translateX(0); }
+  .nav-card .label {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--terran);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .nav-card .title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .nav-card .desc {
+    font-size: 11px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+  .nav-card.primary {
+    border-color: var(--terran);
+    background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(255,182,39,0.08) 100%);
+  }
+  .nav-card.primary .label { color: var(--cyan); }
+  .nav-card.primary .title { color: var(--terran); font-size: 17px; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .info-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+  }
+  .info-card .k {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .info-card .v {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--cyan);
+  }
+  .info-card .v.terran { color: var(--terran); }
+
+  pre {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    padding: 14px 16px;
+    font-size: 12px;
+    overflow-x: auto;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+  code {
+    background: var(--bg-panel);
+    padding: 1px 6px;
+    color: var(--cyan);
+    font-size: 12px;
+    border: 1px solid var(--border);
+  }
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+  a { color: var(--cyan); }
+  a:hover { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
+
+  ul { padding-left: 24px; color: var(--ink); margin-bottom: 12px; }
+  ul li { margin-bottom: 4px; }
+  ul li strong { color: var(--terran); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>DANTALINK</h1>
+    <div class="tagline">
+      <span class="pulse"></span>BEHAVIORAL FINANCE × KOREAN MARKET × SHORT-TERM ALPHA
+    </div>
+  </header>
+
+  <p class="lead">
+    한국 시장의 <strong>음운/카테고리 매칭</strong>으로 발생하는 단기 모멘텀을 시스템적으로 포착하는 도구.
+    카너먼·트버스키의 휴리스틱, Rashes(2001) 이름 유사성 효과, Da/Engelberts/Gao(2011) 주목 기반 거래 등
+    행동재무학 핵심 이론을 알고리즘으로 정형화. <strong>SeouLink</strong> 산하 프로젝트.
+  </p>
+
+  <h2>▸ Quick Launch</h2>
+  <div class="nav-grid">
+    <a class="nav-card primary" href="docs/DantaLink_종목추출_GUI.html">
+      <div class="label">GUI · Stage 02</div>
+      <div class="title">📈 Stock Match Console</div>
+      <div class="desc">종목 추출 결과 시각화 콘솔. HOBIS Terran Console 디자인. 호버 툴팁 + ❔ HELP 모달로 모든 데이터 의미 설명.</div>
+    </a>
+    <a class="nav-card" href="docs/DantaLink_데이터수집기.html">
+      <div class="label">GUI · Stage 01</div>
+      <div class="title">📡 Data Collection Console</div>
+      <div class="desc">트리거 이벤트 수집기 프로토타입 (Mock). RSS·GDELT·DART·Telegram 토글 + 콘솔 로그.</div>
+    </a>
+    <a class="nav-card" href="docs/DantaLink_시각화.html">
+      <div class="label">방법론 시각화</div>
+      <div class="title">📚 Methodology Visualization</div>
+      <div class="desc">Kelly 공식 + 인지 매칭 스펙트럼 + 5단계 프레임워크. MathJax 수식 시각화.</div>
+    </a>
+    <a class="nav-card" href="docs/DantaLink_방법론.md">
+      <div class="label">방법론 문서</div>
+      <div class="title">📄 Methodology.md</div>
+      <div class="desc">학술 근거 (카너먼·Rashes 등 13개 논문) + 5단계 프레임워크 + 세금 + 리스크 관리.</div>
+    </a>
+  </div>
+
+  <h2>▸ At a Glance</h2>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="k">Stage 01 (수집)</div>
+      <div class="v">✓ DONE</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Stage 02 (매칭)</div>
+      <div class="v terran">◐ V0.1</div>
+    </div>
+    <div class="info-card">
+      <div class="k">KRX 종목 DB</div>
+      <div class="v">2,878</div>
+    </div>
+    <div class="info-card">
+      <div class="k">pytest</div>
+      <div class="v">15 / 15</div>
+    </div>
+  </div>
+
+  <h2>▸ Pipeline</h2>
+  <pre>[Stage 01 — 수집]                  events.json
+  RSS 8피드 · GDELT · DART  ─────▶  { event_id, title, body,
+                                       category, keywords, ... }
+                          ↓
+[분류기] 휴리스틱 카테고리          7개 카테고리 (HEALTH, TECH,
+  키워드 사전 + tie-break             GEOPOLITICAL, PERSON, ...)
+                          ↓
+[Stage 02 — 매칭]                  matches.json
+  Layer A 음운 (첫 음절)    ─────▶  { stock_code, max_score,
+  Layer B 의미 (substring)            layers, matches[], ... }
+                          ↓
+[GUI 시각화]
+  Stock Match Console (현재)
+                          ↓
+[Stage 03~05] 진입신호 · 사이징 · 청산 (예정)</pre>
+
+  <h2>▸ Try it locally</h2>
+  <pre><code># 설치
+git clone https://github.com/jyc0289y-art/dantalink.git
+cd dantalink
+pip install -e ".[dev]"
+pip install finance-datareader
+
+# 라이브 수집 (RSS 단독)
+python -m dantalink.cli scan \
+    --keywords "AI,에볼라,OpenAI" --timespan 24h \
+    --sources rss --max-records 20 --output events.json
+
+# 종목 매칭
+python -m dantalink.cli match \
+    --input events.json --output matches.json \
+    --top 30 --min-marcap 100 --max-marcap 5000 --sort max</code></pre>
+
+  <h2>▸ Key Reports</h2>
+  <ul>
+    <li><strong><a href="docs/reports/20260520_124844_DantaLink_검토보고서_및_플랜.md">전체 검토 보고서 + 우선순위 플랜</a></strong> — H1~H5 즉시 수정 + M1~M6 중기 + L1~L4 장기 분류</li>
+    <li><strong><a href="docs/reports/20260520_132758_Phase_D_E_Stage02_종목추출.md">Stage 02 종목 추출 보고서</a></strong> — 시연(아이진 1위)과 라이브(비상교육·코아스) 매칭 결과</li>
+    <li><strong><a href="docs/reports/20260520_133534_시행착오_노하우_정리.md">시행착오·노하우 정리</a></strong> — GDELT 5초 한도, 1자 토큰 페널티, 한글 인코딩, regex `{2,5}` 함정 등 8 파트</li>
+    <li><strong><a href="docs/reports/20260520_134506_다음분기_우선작업_외국인명패턴.md">다음 분기 우선 작업 — 샘 알트먼 → 샘표</a></strong> — 외국 인명 패턴 인식 명세</li>
+  </ul>
+
+  <h2>▸ Disclaimers</h2>
+  <ul>
+    <li><strong>현재 단계는 종목 발굴만</strong>. 자동 매수/매도 API 호출은 활성화하지 않음.</li>
+    <li><strong>단일 거래 자본 5% 초과 금지</strong> — Kelly 1/4 공식 안전 마진.</li>
+    <li><strong>종토방·게시판 글쓰기 자동화 절대 금지</strong> — 시장 조작 우려.</li>
+    <li>본 도구는 <strong>연구·교육 목적</strong>이며, 매매 손익 책임은 본인에게 있음.</li>
+  </ul>
+
+  <footer>
+    <div>● SeouLink / DantaLink v0.1 / Stage 02</div>
+    <div>HOBIS DESIGN SYSTEM · TERRAN CONSOLE</div>
+    <div><a href="https://github.com/jyc0289y-art/dantalink" style="color:var(--cyan);">github.com/jyc0289y-art/dantalink</a></div>
+  </footer>
+</div>
+</body>
+</html>
