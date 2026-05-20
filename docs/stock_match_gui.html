@@ -629,6 +629,176 @@
     border-top: 2px solid var(--orange);
   }
 
+  /* ============ 매칭 카드 클릭 + 오버레이 모달 (Phase B) ============ */
+  .match-card { cursor: pointer; transition: all 0.15s; }
+  .match-card:hover {
+    background: var(--bg-elevated);
+    box-shadow: 0 0 8px var(--terran-glow);
+  }
+  .match-card .open-hint {
+    font-size: 9px;
+    color: var(--ink-faint);
+    text-align: right;
+    margin-top: 4px;
+    letter-spacing: 0.1em;
+  }
+  .event-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 60000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .event-overlay.visible { display: flex; }
+  .event-modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--terran);
+    box-shadow: 0 0 48px var(--terran-glow);
+    width: min(720px, 92vw);
+    max-height: 86vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1px;
+  }
+  .event-modal-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elevated);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .event-modal-title-area { flex: 1; min-width: 0; }
+  .event-modal-cat {
+    display: inline-block;
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 2px 7px;
+    margin-bottom: 6px;
+    border: 1px solid currentColor;
+    text-transform: uppercase;
+  }
+  .event-modal-title {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  .event-modal-close {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--ink-dim);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 3px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .event-modal-close:hover { border-color: var(--red); color: var(--red); }
+  .event-modal-body {
+    padding: 16px 18px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .event-modal-meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 12px;
+    font-size: 11px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-dim);
+  }
+  .event-modal-meta .k {
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 9px;
+    padding-top: 2px;
+  }
+  .event-modal-meta .v { color: var(--ink); word-break: break-all; }
+  .event-modal-meta .v code {
+    background: var(--bg-input);
+    padding: 1px 5px;
+    color: var(--cyan);
+    border: 1px solid var(--border);
+    font-size: 10px;
+  }
+  .event-modal-meta a { color: var(--cyan); }
+  .event-modal-meta a:hover { text-shadow: 0 0 8px var(--cyan-glow); }
+  .event-modal-section-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--terran);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .event-modal-body-text {
+    color: var(--ink);
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .event-modal-body-empty {
+    color: var(--ink-faint);
+    font-size: 11px;
+    text-align: center;
+    padding: 24px;
+    border: 1px dashed var(--border);
+  }
+  .event-modal-keywords {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .event-modal-keywords .chip {
+    display: inline-block;
+    background: rgba(78, 205, 196, 0.1);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 2px 7px;
+    font-size: 10px;
+  }
+  .event-modal-match-info {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: var(--bg-input);
+    border-left: 2px solid var(--terran);
+    font-size: 11px;
+  }
+  .event-modal-match-info strong { color: var(--green); }
+
+  /* Match Evidence sort row */
+  .match-sort-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 10px;
+  }
+  .match-sort-row label {
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .match-sort-row select {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
   /* ============ DETAIL ============ */
   .detail {
     background: var(--bg-panel);
@@ -1074,6 +1244,22 @@
   <div class="tooltip-body" id="tooltip-body"></div>
 </div>
 
+<!-- EVENT DETAIL OVERLAY (Phase B) -->
+<div class="event-overlay" id="event-overlay">
+  <div class="event-modal" id="event-modal">
+    <div class="event-modal-header">
+      <div class="event-modal-title-area">
+        <div class="event-modal-cat" id="event-modal-cat">unknown</div>
+        <div class="event-modal-title" id="event-modal-title">…</div>
+      </div>
+      <button class="event-modal-close" id="event-modal-close" title="닫기 (Esc)">✕</button>
+    </div>
+    <div class="event-modal-body" id="event-modal-body">
+      <!-- JS로 채움 -->
+    </div>
+  </div>
+</div>
+
 <!-- HELP MODAL -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
@@ -1356,7 +1542,32 @@
     topN: 30,
     minMarcap: 0,
     maxMarcap: 0,
+    matchSort: 'score_desc',     // Match Evidence 정렬
+    eventsByTitle: new Map(),    // 원본 이벤트 join용 (Phase B 오버레이)
   };
+
+  // 원본 이벤트 데이터 fetch + title 기준 join map 구축
+  async function loadEventsForOverlay() {
+    const datasets = ['events_rss.json', 'events_demo.json'];
+    for (const ds of datasets) {
+      for (const url of ['../' + ds, './' + ds]) {
+        try {
+          const resp = await fetch(url);
+          if (!resp.ok) continue;
+          const data = await resp.json();
+          for (const ev of data) {
+            const key = (ev.title || '').trim();
+            if (key && !STATE.eventsByTitle.has(key)) {
+              STATE.eventsByTitle.set(key, ev);
+            }
+          }
+          break;
+        } catch (_) { continue; }
+      }
+    }
+  }
+  // 페이지 로드 시 비동기로 events join map 준비 (블로킹 X)
+  loadEventsForOverlay();
 
   // ============ EMBEDDED SAMPLE ============
   const SAMPLE_DEMO = {
@@ -1643,7 +1854,16 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
     if (e.target === modalOverlay) modalOverlay.classList.remove('visible');
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') modalOverlay.classList.remove('visible');
+    if (e.key === 'Escape') {
+      modalOverlay.classList.remove('visible');
+      closeEventOverlay();
+    }
+  });
+
+  // Phase B 오버레이 닫기 핸들러
+  $('#event-modal-close').addEventListener('click', closeEventOverlay);
+  $('#event-overlay').addEventListener('click', (e) => {
+    if (e.target === $('#event-overlay')) closeEventOverlay();
   });
 
   // ============ DATA LOADING ============
@@ -1864,13 +2084,35 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
     $$('.stock-card').forEach(c => c.classList.toggle('selected', c.dataset.code === code));
   }
 
+  function sortMatches(matches, mode) {
+    const sorted = (matches || []).slice();
+    switch (mode) {
+      case 'score_desc':
+        sorted.sort((a, b) => (b.score || 0) - (a.score || 0));
+        break;
+      case 'score_asc':
+        sorted.sort((a, b) => (a.score || 0) - (b.score || 0));
+        break;
+      case 'layer':
+        sorted.sort((a, b) => (a.layer || '').localeCompare(b.layer || '') ||
+                              (b.score || 0) - (a.score || 0));
+        break;
+      case 'category':
+        sorted.sort((a, b) => (a.event_category || 'zz').localeCompare(b.event_category || 'zz') ||
+                              (b.score || 0) - (a.score || 0));
+        break;
+    }
+    return sorted;
+  }
+
   function renderDetail(s) {
     const detail = $('#detail');
-    const matchesHtml = (s.matches || []).map(m => {
+    const sortedMatches = sortMatches(s.matches, STATE.matchSort);
+    const matchesHtml = sortedMatches.map((m, idx) => {
       const cat = m.event_category || 'unknown';
       const layerLabel = m.layer === 'phonological' ? '音韻 (음운)' : '意味 (의미)';
       return `
-        <div class="match-card layer-${m.layer}">
+        <div class="match-card layer-${m.layer}" data-match-idx="${idx}">
           <div class="match-header">
             <span class="match-meta" data-help="match_meta">${layerLabel}</span>
             <span class="match-score" data-help="match_score">${m.score.toFixed(2)}</span>
@@ -1881,6 +2123,7 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
           <div class="match-event">
             <span class="match-event-category text-cat-${cat}" data-help="cat_${cat}">${cat}</span>${escapeHtml(m.event_title || '(no title)')}
           </div>
+          <div class="open-hint">▸ click to open original article</div>
         </div>
       `;
     }).join('');
@@ -1895,10 +2138,91 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
       </div>
       <div>
         <div class="section-title">▸ Match Evidence (${s.match_count})</div>
+        <div class="match-sort-row">
+          <label>SORT</label>
+          <select id="match-sort">
+            <option value="score_desc">점수 ↓</option>
+            <option value="score_asc">점수 ↑</option>
+            <option value="layer">레이어 (음운→의미)</option>
+            <option value="category">이벤트 카테고리</option>
+          </select>
+        </div>
         ${matchesHtml || '<div class="detail-empty">no matches</div>'}
       </div>
     `;
+    // 정렬 select 복원 + 핸들러
+    const sortSel = $('#match-sort');
+    if (sortSel) {
+      sortSel.value = STATE.matchSort;
+      sortSel.addEventListener('change', (e) => {
+        STATE.matchSort = e.target.value;
+        renderDetail(s);
+      });
+    }
+    // 매칭 카드 클릭 → 오버레이
+    detail.querySelectorAll('.match-card').forEach((card, i) => {
+      card.addEventListener('click', (e) => {
+        // sort select 클릭은 제외
+        if (e.target.closest('.match-sort-row')) return;
+        const m = sortedMatches[parseInt(card.dataset.matchIdx, 10)];
+        if (m) openEventOverlay(m);
+      });
+    });
   }
+
+  // ===== Phase B 오버레이 모달 =====
+  function openEventOverlay(match) {
+    const overlay = $('#event-overlay');
+    const titleEl = $('#event-modal-title');
+    const catEl = $('#event-modal-cat');
+    const bodyEl = $('#event-modal-body');
+    const cat = match.event_category || 'unknown';
+    titleEl.textContent = match.event_title || '(no title)';
+    catEl.textContent = cat.toUpperCase();
+    catEl.className = 'event-modal-cat text-cat-' + cat;
+
+    const fullEvent = STATE.eventsByTitle.get((match.event_title || '').trim());
+    const layerLabel = match.layer === 'phonological' ? '音韻 — 음운 매칭' : '意味 — 의미 매칭';
+    let body = '';
+    body += '<div class="event-modal-meta">';
+    if (fullEvent) {
+      body += '<div class="k">SOURCE</div><div class="v"><code>' + escapeHtml(fullEvent.source || '?') + '</code></div>';
+      body += '<div class="k">PUBLISHED</div><div class="v">' + escapeHtml((fullEvent.published_at || '').slice(0, 19).replace('T', ' ')) + ' UTC</div>';
+      if (fullEvent.url) {
+        body += '<div class="k">URL</div><div class="v"><a href="' + escapeHtml(fullEvent.url) + '" target="_blank" rel="noopener">' + escapeHtml(fullEvent.url) + ' ↗</a></div>';
+      }
+      if (fullEvent.keywords && fullEvent.keywords.length) {
+        body += '<div class="k">KEYWORDS</div><div class="v event-modal-keywords">';
+        body += fullEvent.keywords.map(k => '<span class="chip">' + escapeHtml(k) + '</span>').join('');
+        body += '</div>';
+      }
+      if (fullEvent.event_id) {
+        body += '<div class="k">EVENT ID</div><div class="v"><code>' + escapeHtml(fullEvent.event_id) + '</code></div>';
+      }
+    } else {
+      body += '<div class="k">JOIN</div><div class="v" style="color:var(--orange);">⚠ 원본 이벤트 join 실패 (events_*.json에서 동일 title 찾지 못함). matches.json만의 정보로 표시.</div>';
+    }
+    body += '</div>';
+
+    body += '<div class="event-modal-section-title">▸ Original Body</div>';
+    if (fullEvent && fullEvent.body && fullEvent.body.trim()) {
+      body += '<div class="event-modal-body-text">' + escapeHtml(fullEvent.body) + '</div>';
+    } else {
+      body += '<div class="event-modal-body-empty">본문 데이터 없음 (헤드라인만 수집된 소스이거나 join 실패)</div>';
+    }
+
+    body += '<div class="event-modal-match-info">';
+    body += '<div style="color:var(--ink-faint); font-size:9px; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:4px;">▸ MATCH MECHANISM</div>';
+    body += '레이어: <strong>' + escapeHtml(layerLabel) + '</strong> · ';
+    body += '점수: <strong>' + match.score.toFixed(2) + '</strong> · ';
+    body += '매칭 단서: <strong>' + escapeHtml(match.matched_on || '') + '</strong>';
+    body += '</div>';
+
+    bodyEl.innerHTML = body;
+    overlay.classList.add('visible');
+    hideTooltip();
+  }
+  function closeEventOverlay() { $('#event-overlay').classList.remove('visible'); }
 
   function escapeHtml(text) {
     if (text == null) return '';

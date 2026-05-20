@@ -353,10 +353,20 @@
     </div>
 
     <div class="panel right">
-      <div class="right-toolbar">
+      <div class="right-toolbar" style="flex-direction:column; align-items:stretch; gap:6px;">
         <div class="center-title" style="font-size:12px;">
           COLLECTED EVENTS
           <span id="event-badge" style="color:var(--terran); margin-left:6px;">0</span>
+        </div>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <label style="font-size:9px; color:var(--ink-faint); letter-spacing:0.15em; text-transform:uppercase;">SORT</label>
+          <select id="event-sort" class="control-input" style="flex:1; font-size:11px; padding:4px 6px;">
+            <option value="published_desc">시각 ↓ (최신순)</option>
+            <option value="published_asc">시각 ↑ (오래된순)</option>
+            <option value="category">카테고리</option>
+            <option value="source">소스</option>
+            <option value="title">제목 (ㄱㄴㄷ)</option>
+          </select>
         </div>
       </div>
       <div class="stats-row">
@@ -390,8 +400,33 @@
     timespan: '24H',
     dataset: '__all__',  // ALL default — 모든 데이터셋 합산
     collectedEvents: [],
+    eventSort: 'published_desc',  // 정렬 옵션 default
   };
   const AVAILABLE_DATASETS = ['events_rss.json', 'events_demo.json'];
+
+  // 정렬 함수
+  function sortEvents(events, mode) {
+    const sorted = events.slice();
+    switch (mode) {
+      case 'published_desc':
+        sorted.sort((a, b) => (b.published_at || '').localeCompare(a.published_at || ''));
+        break;
+      case 'published_asc':
+        sorted.sort((a, b) => (a.published_at || '').localeCompare(b.published_at || ''));
+        break;
+      case 'category':
+        sorted.sort((a, b) => (a.category || 'zz').localeCompare(b.category || 'zz') ||
+                              (b.published_at || '').localeCompare(a.published_at || ''));
+        break;
+      case 'source':
+        sorted.sort((a, b) => (a.source || 'zz').localeCompare(b.source || 'zz'));
+        break;
+      case 'title':
+        sorted.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ko'));
+        break;
+    }
+    return sorted;
+  }
 
   function $(s) { return document.querySelector(s); }
   function $$(s) { return Array.from(document.querySelectorAll(s)); }
@@ -420,7 +455,8 @@
 
   function renderEvents() {
     const list = $('#events-list');
-    const events = STATE.collectedEvents;
+    const rawEvents = STATE.collectedEvents;
+    const events = sortEvents(rawEvents, STATE.eventSort);
     $('#event-badge').textContent = events.length;
     $('#stat-events').textContent = events.length;
     const srcSet = new Set(events.map(e => e.source));
@@ -577,6 +613,7 @@
     STATE.timespan = b.textContent;
   }));
   $('#dataset-select').addEventListener('change', (e) => { STATE.dataset = e.target.value; });
+  $('#event-sort').addEventListener('change', (e) => { STATE.eventSort = e.target.value; renderEvents(); });
   $('#btn-scan').addEventListener('click', executeScan);
   $('#btn-forward').addEventListener('click', forwardToMatcher);
 
