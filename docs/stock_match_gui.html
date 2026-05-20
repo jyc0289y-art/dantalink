@@ -1050,6 +1050,103 @@
     overflow-y: auto;
     padding: 20px 24px;
   }
+  .chart-source-toggle {
+    display: flex;
+    background: var(--bg-input);
+    border-bottom: 1px solid var(--border);
+    padding: 4px;
+    gap: 4px;
+  }
+  .chart-source-toggle button {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border-dim);
+    color: var(--ink-dim);
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    padding: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .chart-source-toggle button.active {
+    background: var(--terran);
+    color: #000;
+    border-color: var(--terran);
+  }
+  .chart-area {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .chart-area iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: white;
+  }
+  .chart-area img {
+    display: block;
+    margin: 16px auto 12px;
+    max-width: 100%;
+    background: white;
+    padding: 4px;
+  }
+  .chart-img-row {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chart-img-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    padding: 8px;
+    text-align: center;
+  }
+  .chart-img-card .label {
+    font-family: var(--display);
+    font-size: 10px;
+    color: var(--terran);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .chart-img-card img {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  .analysis-iframe-host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .analysis-iframe-bar {
+    background: var(--bg-input);
+    border-bottom: 1px solid var(--border);
+    padding: 6px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+  }
+  .analysis-iframe-bar a {
+    color: var(--cyan);
+    text-decoration: none;
+    padding: 3px 8px;
+    border: 1px solid var(--cyan);
+    font-family: var(--display);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .analysis-iframe-bar a:hover {
+    background: var(--cyan);
+    color: #000;
+  }
   .analysis-link-card {
     display: block;
     background: var(--bg-panel);
@@ -2681,49 +2778,142 @@ PYTHONIOENCODING=utf-8 python -m dantalink.cli match \\
     if (!s) return;
     const code = s.stock_code;
     const name = s.stock_name;
-    const market = (s.market || '').toUpperCase();
-    // TradingView prefix — KOSPI/KOSDAQ/KOSDAQ GLOBAL 모두 KRX:코드
-    const tvSymbol = 'KRX:' + code;
     const body = $('#analysis-body');
-    // 탭 active 상태 동기화
     document.querySelectorAll('.analysis-tab').forEach(t =>
       t.classList.toggle('active', t.dataset.tab === ANALYSIS_STATE.activeTab));
 
     if (ANALYSIS_STATE.activeTab === 'chart') {
-      // TradingView 위젯 embed
-      const url = 'https://s.tradingview.com/widgetembed/?symbol=' + encodeURIComponent(tvSymbol)
-                + '&interval=D&theme=dark&style=1&locale=kr&hide_side_toolbar=0&allow_symbol_change=1&saveimage=1';
-      body.innerHTML = '<iframe src="' + url + '" title="TradingView Chart"></iframe>';
+      body.innerHTML = renderChartPane(code, name);
+      wireChartToggle(code, name);
     } else if (ANALYSIS_STATE.activeTab === 'news') {
-      body.innerHTML = renderLinkPane('news', code, name);
+      body.innerHTML = renderEmbedPane('news', code, name);
     } else if (ANALYSIS_STATE.activeTab === 'forum') {
-      body.innerHTML = renderLinkPane('forum', code, name);
+      body.innerHTML = renderEmbedPane('forum', code, name);
     }
   }
-  function renderLinkPane(kind, code, name) {
-    const links = (kind === 'news')
+
+  // ===== 차트 (네이버 모바일 default + TradingView + 정적 이미지 fallback) =====
+  function renderChartPane(code, name) {
+    if (!ANALYSIS_STATE.chartSource) ANALYSIS_STATE.chartSource = 'naver_m';
+    const src = ANALYSIS_STATE.chartSource;
+    const naverMobileUrl = 'https://m.stock.naver.com/domestic/stock/' + code + '/total';
+    const tvUrl = 'https://s.tradingview.com/widgetembed/?symbol=' + encodeURIComponent('KRX:' + code)
+                + '&interval=D&theme=dark&style=1&locale=kr&hide_side_toolbar=0&allow_symbol_change=1&saveimage=1';
+    const desktopNaverUrl = 'https://finance.naver.com/item/main.naver?code=' + code;
+
+    const toggleHtml = `
+      <div class="chart-source-toggle">
+        <button data-csrc="naver_m" class="${src==='naver_m'?'active':''}">네이버 모바일 (한국 종목 최적)</button>
+        <button data-csrc="tradingview" class="${src==='tradingview'?'active':''}">TradingView</button>
+        <button data-csrc="static_img" class="${src==='static_img'?'active':''}">정적 차트 이미지</button>
+      </div>`;
+    let content = '';
+    if (src === 'naver_m') {
+      content = `
+        <div class="analysis-iframe-bar">
+          <span>📈 ${escapeHtml(name)} (${code}) · 네이버 모바일</span>
+          <a href="${escapeHtml(naverMobileUrl)}" target="_blank" rel="noopener">새 탭 ↗</a>
+        </div>
+        <div class="chart-area">
+          <iframe src="${escapeHtml(naverMobileUrl)}" title="네이버 모바일 차트" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+        </div>`;
+    } else if (src === 'tradingview') {
+      content = `
+        <div class="analysis-iframe-bar">
+          <span>📈 ${escapeHtml(name)} (KRX:${code}) · TradingView</span>
+          <a href="https://www.tradingview.com/symbols/KRX-${code}/" target="_blank" rel="noopener">새 탭 ↗</a>
+        </div>
+        <div class="chart-area">
+          <iframe src="${escapeHtml(tvUrl)}" title="TradingView"></iframe>
+        </div>
+        <div style="background:var(--bg-input); padding:8px 12px; font-size:10px; color:var(--orange); border-top:1px solid var(--border);">
+          ⓘ TradingView가 일부 KRX 종목 (예: 삼천당제약 000250)을 미지원하면 빈 차트가 표시될 수 있습니다.
+          이 경우 "네이버 모바일" 또는 "정적 차트 이미지" 탭으로 전환하세요.
+        </div>`;
+    } else {  // static_img
+      content = `
+        <div class="analysis-iframe-bar">
+          <span>📈 ${escapeHtml(name)} (${code}) · 정적 차트 (네이버 PNG)</span>
+          <a href="${escapeHtml(desktopNaverUrl)}" target="_blank" rel="noopener">네이버 페이지 ↗</a>
+        </div>
+        <div class="analysis-pane">
+          <div class="chart-img-row">
+            <div class="chart-img-card">
+              <div class="label">일봉 (Day)</div>
+              <img src="https://ssl.pstatic.net/imgfinance/chart/item/area/day/${code}.png" alt="일봉" loading="lazy" onerror="this.parentElement.style.display='none';">
+            </div>
+            <div class="chart-img-card">
+              <div class="label">주봉 (Week)</div>
+              <img src="https://ssl.pstatic.net/imgfinance/chart/item/area/week/${code}.png" alt="주봉" loading="lazy" onerror="this.parentElement.style.display='none';">
+            </div>
+            <div class="chart-img-card">
+              <div class="label">3개월</div>
+              <img src="https://ssl.pstatic.net/imgfinance/chart/item/area/month3/${code}.png" alt="3개월" loading="lazy" onerror="this.parentElement.style.display='none';">
+            </div>
+            <div class="chart-img-card">
+              <div class="label">년봉 (Year)</div>
+              <img src="https://ssl.pstatic.net/imgfinance/chart/item/area/year/${code}.png" alt="년봉" loading="lazy" onerror="this.parentElement.style.display='none';">
+            </div>
+          </div>
+          <div class="analysis-note" style="margin:8px 14px;">
+            ⓘ 네이버 금융 정적 차트 이미지. 인터랙티브 X. 인터랙티브 차트는 "네이버 모바일" 탭 사용.
+          </div>
+        </div>`;
+    }
+    return `<div class="analysis-iframe-host">${toggleHtml}${content}</div>`;
+  }
+
+  function wireChartToggle(code, name) {
+    document.querySelectorAll('.chart-source-toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        ANALYSIS_STATE.chartSource = btn.dataset.csrc;
+        renderAnalysisTab();  // 차트 탭만 재렌더
+      });
+    });
+  }
+
+  // ===== 뉴스/종목토론 — iframe 임베드 (모달 내 브라우징) =====
+  function renderEmbedPane(kind, code, name) {
+    const isNews = kind === 'news';
+    const primaryUrl = isNews
+      ? 'https://m.stock.naver.com/domestic/stock/' + code + '/news'
+      : 'https://m.stock.naver.com/domestic/stock/' + code + '/discussion';
+    const desktopUrl = isNews
+      ? 'https://finance.naver.com/item/news.naver?code=' + code
+      : 'https://finance.naver.com/item/board.naver?code=' + code;
+    const altLinks = isNews
       ? [
-        { name: '네이버 금융 — 뉴스·공시',  url: 'https://finance.naver.com/item/news.naver?code=' + code },
-        { name: '네이버 금융 — 종목 메인',  url: 'https://finance.naver.com/item/main.naver?code=' + code },
-        { name: '다음 금융 — 종목',        url: 'https://finance.daum.net/quotes/A' + code },
-        { name: 'Google 검색 — 종목명 뉴스', url: 'https://www.google.com/search?q=' + encodeURIComponent(name + ' 뉴스') + '&tbm=nws' }
+        { name: '네이버 데스크톱 뉴스', url: 'https://finance.naver.com/item/news.naver?code=' + code },
+        { name: '다음 금융', url: 'https://finance.daum.net/quotes/A' + code },
+        { name: 'Google 뉴스 검색', url: 'https://www.google.com/search?q=' + encodeURIComponent(name + ' 뉴스') + '&tbm=nws' }
       ]
       : [
-        { name: '네이버 금융 — 종목토론실', url: 'https://finance.naver.com/item/board.naver?code=' + code },
-        { name: '다음 금융 — 종목토론',      url: 'https://finance.daum.net/quotes/A' + code + '/discussion' },
-        { name: '팍스넷 — 종목토론방',       url: 'https://paxnet.koscom.co.kr/stock/' + code + '/talkList' }
+        { name: '네이버 데스크톱 종목토론', url: 'https://finance.naver.com/item/board.naver?code=' + code },
+        { name: '다음 종목토론', url: 'https://finance.daum.net/quotes/A' + code + '/discussion' },
+        { name: '팍스넷 종목토론방', url: 'https://paxnet.koscom.co.kr/stock/' + code + '/talkList' }
       ];
-    const note = (kind === 'news')
-      ? '네이버/다음 금융이 iframe 임베드를 차단하여 새 탭으로 엽니다.'
-      : '종목토론 페이지는 모두 iframe 임베드 차단 정책으로 새 탭에서 열립니다.';
-    return '<div class="analysis-pane">'
-      + '<div class="analysis-note">ⓘ ' + note + '</div>'
-      + links.map(l => '<a class="analysis-link-card" href="' + escapeHtml(l.url) + '" target="_blank" rel="noopener">'
-                    + '<span class="arrow">↗</span>'
-                    + '<div class="name">' + escapeHtml(l.name) + '</div>'
-                    + '<div class="url">' + escapeHtml(l.url) + '</div>'
-                    + '</a>').join('')
-      + '</div>';
+    const altHtml = altLinks.map(l =>
+      `<a class="analysis-link-card" href="${escapeHtml(l.url)}" target="_blank" rel="noopener" style="padding:8px 12px; margin-bottom:6px;">
+        <span class="arrow">↗</span>
+        <div class="name" style="font-size:10px;">${escapeHtml(l.name)}</div>
+       </a>`
+    ).join('');
+    return `<div class="analysis-iframe-host">
+      <div class="analysis-iframe-bar">
+        <span>${isNews ? '📰' : '💬'} ${escapeHtml(name)} (${code}) · 네이버 모바일${isNews ? ' 뉴스' : ' 종목토론'}</span>
+        <a href="${escapeHtml(primaryUrl)}" target="_blank" rel="noopener">새 탭 ↗</a>
+      </div>
+      <div class="chart-area" style="display:flex;">
+        <iframe src="${escapeHtml(primaryUrl)}" title="${isNews ? '뉴스' : '종목토론'}" style="flex:1;" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+        <div style="width:200px; background:var(--bg-panel); border-left:1px solid var(--border); padding:10px; overflow-y:auto;">
+          <div style="font-family:var(--display); font-size:9px; color:var(--ink-faint); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:8px;">대체 출처</div>
+          ${altHtml}
+          <div style="font-size:9px; color:var(--ink-faint); margin-top:10px; line-height:1.5;">
+            ⓘ 임베드 차단 시 좌측 iframe이 비어 보일 수 있습니다. 그럴 때는 대체 출처 새 탭 사용.
+          </div>
+        </div>
+      </div>
+    </div>`;
   }
 
   // ===== Phase B 오버레이 모달 =====
